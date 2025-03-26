@@ -8,3 +8,14 @@ Todos:
 
 # installation
 install moduel with `pip install -e .`
+
+# manual sphinx run
+
+```zsh
+# cd into docs directory
+cd docs/
+# generate source files from module
+sphinx-apidoc -f -o ../docs/source ../projekt_4
+# generate html docs in docs/build/html
+make html
+```
