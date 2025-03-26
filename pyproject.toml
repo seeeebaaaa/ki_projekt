@@ -1,0 +1,11 @@
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "projekt_4"
+version = "2020.0.0"
+dependencies = []
+requires-python = ">=3.12"
+description = "A lovely Hello World Program."
+readme = "README.rst"
