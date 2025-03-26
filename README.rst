@@ -11,6 +11,7 @@ install moduel with `pip install -e .`
 
 # manual sphinx run
 
+[see](https://github.com/cimarieta/sphinx-autodoc-example)
 ```zsh
 # cd into docs directory
 cd docs/
