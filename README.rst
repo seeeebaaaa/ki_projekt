@@ -5,3 +5,6 @@ Todos:
 - Rausfinden wie/was/wo Sphinx kann
 - Python Code erstellen
 - Maybe frage nach UML/Mermaid/etc klären
+
+# installation
+install moduel with `pip install -e .`
