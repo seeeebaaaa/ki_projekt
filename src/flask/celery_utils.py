@@ -1,5 +1,6 @@
 from celery import Celery, Task, shared_task
 from flask import Flask
+from app import turbo
 
 def init_app(app: Flask) -> Celery:
     class FlaskTask(Task):
