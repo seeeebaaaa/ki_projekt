@@ -12,9 +12,10 @@ services:
       - projekt_4_network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://0.0.0.0:5000/healthy"]
-      interval: 10s
+      interval: 30s
       timeout: 5s
       retries: 5
+  
   flask:
     container_name: flask
     build: ./flask
@@ -27,9 +28,25 @@ services:
     depends_on:
       ast:
         condition: service_healthy
+      redis:
+        condition: service_started
     networks:
       - projekt_4_network
-    
+    environment:
+      CELERY_BROKER_URL: redis://redis:5672
+      CELERY_RESULT_BACKEND: redis://redis:5672
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+  
+  redis:
+    container_name: redis
+    image: redis
+    expose:
+      - 6379
+    networks:
+      - projekt_4_network
+
+
 volumes:
   projekt_4:
   
