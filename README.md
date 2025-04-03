@@ -1,12 +1,5 @@
 ## ki_projekt
 
-## Todos:
-
-- Rausfinden wie LLM mit funtktion + docstring (oder sphinx docs?) dokoumentation überprüfen kann, bzw. erstellen kann. (was für LLm, API? etc)
-- Rausfinden wie/was/wo Sphinx kann
-- Python Code erstellen
-- Maybe frage nach UML/Mermaid/etc klären
-
 ## Installation
 Run the projekt via docker.
 Make sure you have [Docker installed](https://docs.docker.com/desktop/) and execute all commands in the right folder.
