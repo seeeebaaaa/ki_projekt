@@ -1,6 +1,5 @@
 import ast
 import tokenize
-from io import StringIO
 import os
 
 def extract_functions_and_comments(file_path):
