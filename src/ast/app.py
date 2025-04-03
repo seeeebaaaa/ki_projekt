@@ -1,21 +1,20 @@
-from flask import Flask, jsonify, request
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
 
-app = Flask(__name__)
+app = FastAPI()
+class CodeRequest(BaseModel):
+    code: str
 
+@app.post("/toLower")
+def to_lower(request: CodeRequest):
+    """Test route to check if the FastAPI app is working"""
+    return {"result": request.code.lower()}
 
-@app.route('/toLower', methods=['POST'])
-def toLower():
-    """just a test route to check if the flask app is working"""
-    data = request.json
-    code = data['code']    
-    return jsonify(code.lower())
-
-
-@app.route('/healthy', methods=['GET'])
+@app.get("/healthy")
 def healthy():
-    """Route that povides an endpoint for the docker healthcheck."""
+    """Route that provides an endpoint for the Docker health check."""
     return "yay"
 
-@app.route('/py/file', methods=['POST'])
+@app.post("/py/file")
 def py_file():
     return "nothing"

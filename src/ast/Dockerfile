@@ -16,4 +16,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 # copy project
 COPY . /ast
 
-CMD ["flask","run", "--debug","--host=0.0.0.0","--port=5000"]
+CMD ["fastapi","dev","--host=0.0.0.0","--port=5000", "app.py"]

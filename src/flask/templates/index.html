@@ -32,7 +32,7 @@
                     body: JSON.stringify({ code: userInput })
                 });
                 const data = await response.json();
-                document.getElementById('responseText').textContent = data || 'No response';
+                document.getElementById('responseText').textContent = data.result || 'No response';
             } catch (error) {
                 document.getElementById('responseText').textContent = 'Error occurred';
             }
