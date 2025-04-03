@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    Yayyy
+    <br>
+    <div id="health-check">
+        Healthy: {{ healthy }}
+    </div>
+    <div>
+        <input type="text" id="userInput" placeholder="Enter text">
+        <button onclick="sendRequest()">Submit</button>
+    </div>
+    <div id="response">
+        Response: <span id="responseText"></span>
+    </div>
+
+    <script>
+        async function sendRequest() {
+            const userInput = document.getElementById('userInput').value;
+            try {
+                const response = await fetch('/getLower', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ code: userInput })
+                });
+                const data = await response.json();
+                document.getElementById('responseText').textContent = data || 'No response';
+            } catch (error) {
+                document.getElementById('responseText').textContent = 'Error occurred';
+            }
+        }
+    </script>
+</body>
+</html>
