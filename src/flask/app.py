@@ -14,7 +14,7 @@ SESSION_REDIS = Redis(host=os.environ["REDIS_HOST"], port=os.environ["REDIS_PORT
 app.config.from_object(__name__)
 Session(app)
 turbo = Turbo(app)
-# Talisman(app) #breaks inline script, needs to be configured some how but idfk
+# Talisman(app) #breaks inline script, needs to be configured some how but idfk what
 
 @turbo.user_id
 def get_user_id():
