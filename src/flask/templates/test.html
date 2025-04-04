@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.10/lib/codemirror.css">
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.10/lib/codemirror.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.10/mode/javascript/javascript.js"></script>
+
+</head>
+<body>
+    <div id="editor"></div>
+    <script>
+      const editor = CodeMirror(document.getElementById('editor'), {
+        value: 'console.log("Hello CodeMirror!");',
+        mode: 'javascript',
+        lineNumbers: true
+      });
+    </script>
+</body>
+</html>

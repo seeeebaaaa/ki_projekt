@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {{ turbo() }}
+    <script>
+        const SCRIPT_ROOT = {{ request.script_root|tojson }};
+        const URLS = {
+            'startsampleprocess': _=>SCRIPT_ROOT + '/startsampleprocess',
+            'task_result': id=>SCRIPT_ROOT + '/task/'+id
+        };
+    </script>
+    <script   src="https://code.jquery.com/jquery-3.7.1.min.js"   integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="   crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</head>
+<body>
+    Yayyy
+    <br>
+    <div id="health-check">
+        Healthy: {{ healthy }}
+    </div>
+    <div>
+        <input type="text" id="userInput" placeholder="Enter text">
+        <button onclick="sendRequest()">Submit</button>
+    </div>
+    <div id="response">
+        Response: <span id="responseText"></span>
+    </div>
+    <div>
+        <button onclick="startSampleProcess()">Start Sample Process</button>
+        <div id="task-id">
+            Task ID: <span id="taskIdText"></span>
+        </div>
+    </div>
+    <div>
+        <button onclick="fetchTaskResult()">Get Task Result</button>
+        <div id="task-result">
+            <div id="sample-progress-bar">
+                <div class="progress" id="progress-bar" style="height:1em; width:0em; background:red;"></div>
+            </div>
+            <div class="progress-text" id="progress-text">-</div>
+        </div>
+    </div>
+</body>
+</html>
