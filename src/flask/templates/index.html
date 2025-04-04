@@ -20,8 +20,65 @@
     <div id="response">
         Response: <span id="responseText"></span>
     </div>
-
+    <div id="sample-progress-bar">
+        <div class="progress" style="width: 0em;background:red;"></div>
+    </div>
+    <div>
+        <button onclick="startSampleProcess()">Start Sample Process</button>
+        <div id="task-id">
+            Task ID: <span id="taskIdText"></span>
+        </div>
+    </div>
+    <div>
+        <button onclick="fetchTaskResult()">Get Task Result</button>
+        <div id="task-result">
+            Task Result: <span id="taskResultText"></span>
+        </div>
+    </div>
     <script>
+        async function fetchTaskResult() {
+            const taskId = document.getElementById('taskIdText').textContent;
+            if (!taskId || taskId === 'No Task ID') {
+            document.getElementById('taskResultText').textContent = 'Invalid Task ID';
+            return;
+            }
+
+            const pollTaskResult = async () => {
+            try {
+                const response = await fetch(`/task/${taskId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+                });
+                const data = await response.json();
+                document.getElementById('taskResultText').textContent = JSON.stringify(data) || 'No result';
+
+                if (data.ready) {
+                clearInterval(intervalId);
+                }
+            } catch (error) {
+                document.getElementById('taskResultText').textContent = 'Error occurred';
+                clearInterval(intervalId);
+            }
+            };
+
+            const intervalId = setInterval(pollTaskResult, 200);
+        }
+        async function startSampleProcess() {
+            try {
+                const response = await fetch('/startsampleprocess', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const data = await response.json();
+                document.getElementById('taskIdText').textContent = data.task_id || 'No Task ID';
+            } catch (error) {
+                document.getElementById('taskIdText').textContent = 'Error occurred';
+            }
+        }
         async function sendRequest() {
             const userInput = document.getElementById('userInput').value;
             try {

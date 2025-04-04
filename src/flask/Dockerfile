@@ -21,8 +21,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 # copy project
 COPY . /flask
 
-# initate celery
-CMD ["celery", "-A", "app", "worker", "--loglevel", "INFO"]
-
-# start flask
-CMD ["flask","run", "--debug","--host=0.0.0.0","--port=5000"]
+# start 
+CMD ["sh", "./start.sh"]
