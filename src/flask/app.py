@@ -11,9 +11,10 @@ from celery.result import AsyncResult
 from time import sleep
 from secrets import token_urlsafe
 from functools import wraps
+import json
 
 app = Flask(__name__)
-SESSION_TYPE = 'redis'
+SESSION_TYPE = "redis"
 SESSION_REDIS = Redis(host=os.environ["REDIS_HOST"], port=os.environ["REDIS_PORT"])
 app.config.from_object(__name__)
 app.secret_key = token_urlsafe()
@@ -42,40 +43,44 @@ def get_user_id():
     print(f"{'-'*10}\nRETURNED USER ID: {session['_id']}\n{'-'*10}")
     return session["_id"]
 
+
 # def set_session():
 #     if "_id" not in session:
 #         # generate a new session id
 #         session["_id"] = uuid.uuid1()
 
+
 def ensure_session(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        print("="*20)
+        print("=" * 20)
         print(turbo.clients)
         print(session)
         if "_id" not in session:
             session["_id"] = uuid.uuid1()
         if session["_id"] not in turbo.clients and request.endpoint != "home":
             print(session["_id"], turbo.clients)
-            print("="*20)
+            print("=" * 20)
             return redirect(url_for("home"))
-        print("="*20)
+        print("=" * 20)
         return f(*args, **kwargs)
+
     return decorated
 
 
 # set up celery
 app.config.from_mapping(
     CELERY=dict(
-        broker_url=os.environ["CELERY_BROKER_URL"], # set via dockerfile
-        result_backend=os.environ["CELERY_RESULT_BACKEND"], # set via dockerfile
+        broker_url=os.environ["CELERY_BROKER_URL"],  # set via dockerfile
+        result_backend=os.environ["CELERY_RESULT_BACKEND"],  # set via dockerfile
         task_ignore_result=True,
     ),
 )
 
 celery_app = init_app(app)
 
-@app.route('/', methods=['GET'])
+
+@app.route("/", methods=["GET"])
 @ensure_session
 def home():
     print(session)
@@ -86,39 +91,44 @@ def home():
     return render_template("index.html", healthy=healthy.text)
 
 
-@app.route('/getLower', methods=['POST'])
+@app.route("/getLower", methods=["POST"])
 def get_lower_data():
     data = request.json
-    code = data['code']
+    code = data["code"]
     response = requests.post("http://ast:5000/toLower", json={"code": code})
     return jsonify(response.json())
 
 
-@app.route('/startsampleprocess', methods=['GET'])
+@app.route("/startsampleprocess", methods=["GET"])
 @ensure_session
 def startsampleprocess():
-    print("-"*10,turbo.clients,sep="\n")
-    print(session.get("_id"))
-    print(session.get("_id")==list(turbo.clients.items())[0][0],"-"*10,sep="\n")
     result = sample_process.apply_async(args=[session.get("_id")])
     return jsonify({"task_id": result.id})
+
 
 # route to check if a task is done
 @app.get("/task/<id>")
 @ensure_session
 def task_result(id: str) -> dict[str, object]:
     task = AsyncResult(id)
-    print(task.info,task.state)
-    return {
-        "ready": task.ready(),
-        "successful": task.successful(),
-        "value": task.result if task.ready() else None,
-        "progress": task.info.get("progress") if task.info else None,
-    }
+    return jsonify(
+        {
+            "state":task.state,
+            "ready": task.ready(),
+            "successful": task.successful(),
+            "value": task.result if task.ready() else None,
+            "progress":task.info["progress"] if task.info and "progress" in task.info else None,
+        }
+    )
+
 
 @shared_task(ignore_result=False)
 def sample_process(session_id):
     for i in range(1, 11):  # Simulate a 10-step task
-        sleep(i)
-        current_task.update_state(state='PROGRESS', meta={'progress': i * 10,"session_id":session_id})
-    current_task.update_state(state='SUCCESS', meta={'endergebnis': 'Task Completed Successfully!'})
+        sleep(i/4)
+        current_task.update_state(
+            state="PROGRESS", meta={"progress": i / 10, "session_id": session_id}
+        )
+    current_task.update_state(
+        state="SUCCESS", meta={"endergebnis": "Task Completed Successfully!"}
+    )
