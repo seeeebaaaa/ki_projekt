@@ -15,6 +15,7 @@
           }
     </style>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tree.css') }}" />
     <link rel="stylesheet" href="{{ url_for('static', filename='js/jquery-ui-1.14.1-2.custom/jquery-ui.min.css') }}" />
     {{ turbo() }}
     <script>
@@ -27,24 +28,68 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
         integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="{{ url_for('static', filename='js/jquery-ui-1.14.1-2.custom/jquery-ui.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/tree.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/script.js') }}"></script>
 </head>
 
 <body>
     <div class="nav">
-        <div class="logo">Projekt 4</div>
+        <div class="left">
+            <div class="logo">Projekt 4</div>
+        </div>
+        <div class="center">
+            <div class="input">
+                https://github.com/seeeebaaaa/ki_projekt.git
+            </div>
+            <button class="switch">
+                {{ inline_svg('refresh-double.svg') }}
+            </button>
+        </div>
+        <div class="right"></div>
     </div>
     <!-- concept is, that eacht one of thsoe can be hidden or shown, to display something, as they arent shown simultaneously -->
-    <div class="main hidden">
+    <div class="main">
         <!-- Show progress bar on the top (like a navbar) with the original input field in the center -->
-         <div class="bar"></div>
+        <div class="bar"></div>
          <!-- in the page center show 1/3 toggleble file list and 2/3 code editor -->
          <div class="content">
-            <div class="files"></div>
+            <!-- show file structure to select -->
+            <div class="files">
+                <!-- <div class="tree">
+                    <div class="section">
+                        <div class="head item">
+                            <div class="action">{{ inline_svg('minus.svg') }}</div>
+                            <div class="symbol">{{ inline_svg('folder.svg') }}</div>
+                            <div class="name">Folder</div>
+                            <input type="checkbox" name="" id="" class="checkbox">
+                        </div>
+                        <div class="group">
+                            <div class="line">
+                                <div></div>
+                            </div>
+                            <div class="items">
+                                <div class="leaf item">
+                                    <div class="symbol">{{ inline_svg('page.svg') }}</div>
+                                    <div class="name">File A.txt</div>
+                                    <input type="checkbox" name="" id="" class="checkbox">
+                                </div>
+                                <div class="leaf item">
+                                    <div class="symbol">{{ inline_svg('page.svg') }}</div>
+                                    <div class="name">File B.txt</div>
+                                    <input type="checkbox" name="" id="" class="checkbox">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+            </div>
+            <!-- container for the CodeMirror editor -->
             <div class="editor"></div>
+            <!-- dialog box to e.g. select which branch etc -->
+            <div class="selection"></div>
          </div>
     </div>
-    <div class="entry">
+    <div class="entry hidden">
         <div class="title">
             Generate and update a project's documentation directly from your browser
         </div>

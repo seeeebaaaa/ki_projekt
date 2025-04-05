@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request, render_template, session, redirect, url_for
+from markupsafe import Markup
 from celery import Celery, Task, shared_task, current_task
 from flask_session import Session
 import requests
@@ -43,11 +44,18 @@ def get_user_id():
     print(f"{'-'*10}\nRETURNED USER ID: {session['_id']}\n{'-'*10}")
     return session["_id"]
 
-
-# def set_session():
-#     if "_id" not in session:
-#         # generate a new session id
-#         session["_id"] = uuid.uuid1()
+# svg helper to render them inline
+# Assuming SVGs are in 'static/svg/'
+@app.context_processor
+def utility_processor():
+    def inline_svg(filename):
+        svg_path = os.path.join(app.static_folder, 'svg', filename)
+        try:
+            with open(svg_path, 'r', encoding='utf-8') as f:
+                return Markup(f.read())  # Markup prevents Jinja from escaping the content
+        except FileNotFoundError:
+            return f"<!-- SVG file '{filename}' not found -->"
+    return dict(inline_svg=inline_svg)
 
 
 def ensure_session(f):
