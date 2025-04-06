@@ -3,20 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.10/lib/codemirror.css">
-<script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.10/lib/codemirror.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.10/mode/javascript/javascript.js"></script>
-
+    <title>Index</title>
+    <link rel="stylesheet" href="{{ static_url_for('static', filename='css/app.css') }}">
+    <script>
+        const SCRIPT_ROOT = {{ request.script_root|tojson }};
+        const URLS = {
+            'startsampleprocess': _=>SCRIPT_ROOT + '/startsampleprocess',
+            'task_result': id=>SCRIPT_ROOT + '/task/'+id
+        };
+    </script>
+    <script type="module" src="{{ static_url_for('static', filename='js/test.js') }}"></script>
 </head>
 <body>
-    <div id="editor"></div>
-    <script>
-      const editor = CodeMirror(document.getElementById('editor'), {
-        value: 'console.log("Hello CodeMirror!");',
-        mode: 'javascript',
-        lineNumbers: true
-      });
-    </script>
+    Yayyy
+    <br>
+    <div id="health-check">
+        Healthy: {{ healthy }}
+    </div>
+    <div>
+        <input type="text" id="userInput" placeholder="Enter text">
+        <button id="submit_lower">Submit</button>
+    </div>
+    <div id="response">
+        Response: <span id="responseText"></span>
+    </div>
+    <div>
+        <button id="startSampleProcess">Start Sample Process</button>
+        <div id="task-id">
+            Task ID: <span id="taskIdText"></span>
+        </div>
+    </div>
+    <div>
+        <button id="fetchTaskResult">Get Task Result</button>
+        <div id="task-result">
+            <div id="sample-progress-bar">
+                <div class="progress" id="progress-bar" style="height:1em; width:0em; background:red;"></div>
+            </div>
+            <div class="progress-text" id="progress-text">-</div>
+        </div>
+    </div>
 </body>
 </html>

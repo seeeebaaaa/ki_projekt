@@ -11,13 +11,12 @@
             font-style: NORMAL;
             font-weight: 300;
             font-display: swap;
-            src: url({{ url_for('static', filename='fonts/Inter-VariableFont_opsz,wght.ttf') }}) format('ttf');
+            src: url({{ static_url_for('static', filename='fonts/Inter-VariableFont_opsz,wght.ttf') }}) format('ttf');
           }
     </style>
     <link rel="stylesheet" href="{{ static_url_for('static', filename='css/app.css') }}" />
     <link rel="stylesheet" href="{{ static_url_for('static', filename='css/tree.css') }}" />
     <!-- <link rel="stylesheet" href="{{ static_url_for('static', filename='js/jquery-ui-1.14.1-2.custom/jquery-ui.min.css') }}" /> -->
-    {{ turbo() }}
     <script>
         const SCRIPT_ROOT = {{ request.script_root|tojson }};
         const URLS = {
@@ -30,7 +29,6 @@
     <script src="{{ url_for('static', filename='js/jquery-ui-1.14.1-2.custom/jquery-ui.min.js') }}"></script> -->
     <!-- <script src="{{ url_for('static', filename='js/tree.js') }}"></script> -->
     <script type="module" src="{{ url_for('static', filename='js/app.js') }}"></script>
-    <script>console.log("{{ healthy }}")</script>
 </head>
 
 <body>

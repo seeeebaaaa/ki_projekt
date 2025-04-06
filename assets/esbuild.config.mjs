@@ -12,12 +12,14 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const config = {
-  entryPoints: ['./js/app.js'],
-  outfile: '../public/js/app.js',
+  entryPoints: ['./js/app.js',"./js/test.js"],
+  outdir: '../public/js',
   bundle: true,
   minify: minify,
   sourcemap: sourcemap,
   plugins: [copyStaticFiles()],
+  splitting: true,
+  format:"esm"
 }
 
 if (watch) {

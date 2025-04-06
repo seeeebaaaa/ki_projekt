@@ -5,7 +5,6 @@ from flask_session import Session
 import requests
 import os
 from flask_talisman import Talisman
-from turbo_flask import Turbo
 import uuid
 from celery.result import AsyncResult
 from time import sleep
@@ -19,7 +18,6 @@ app.secret_key = token_urlsafe()
 Session(app)
 # Talisman(app) #breaks inline script, needs to be configured some how but idfk what
 FlaskStaticDigest(app)
-turbo = Turbo(app)
 
 def init_celery_app(app: Flask) -> Celery:
     class FlaskTask(Task):
@@ -34,11 +32,6 @@ def init_celery_app(app: Flask) -> Celery:
     return celery_app
 
 celery_app = init_celery_app(app)
-
-@turbo.user_id
-def get_user_id():
-    print(f"{'-'*10}\nRETURNED USER ID: {session['_id']}\n{'-'*10}")
-    return session["_id"]
 
 # svg helper to render them inline
 # Assuming SVGs are in 'static/svg/'
@@ -57,42 +50,22 @@ def utility_processor():
 def ensure_session(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        print("=" * 20)
-        print(turbo.clients)
-        print(session)
+        # print("=" * 20)
+        # print(session)
         if "_id" not in session:
+            print("[ENSURE_SESSION] No ID set, assinging new id..")
             session["_id"] = uuid.uuid1()
-        if session["_id"] not in turbo.clients and request.endpoint != "home":
-            print(session["_id"], turbo.clients)
-            print("=" * 20)
-            return redirect(url_for("home"))
-        print("=" * 20)
+        # print("=" * 20)
         return f(*args, **kwargs)
 
     return decorated
 
-
-# # set up celery
-# app.config.from_mapping(
-#     CELERY=dict(
-#         broker_url=os.environ["CELERY_BROKER_URL"],  # set via dockerfile
-#         result_backend=os.environ["CELERY_RESULT_BACKEND"],  # set via dockerfile
-#         task_ignore_result=True,
-#     ),
-# )
-
-
-
-
 @app.route("/", methods=["GET"])
 @ensure_session
 def home():
-    print(session)
-    print(turbo.clients)
-    print(turbo.can_push())
-    print(turbo.can_stream())
+    # return render_template("index.html")
     healthy = requests.get("http://ast:5000/healthy")
-    return render_template("index.html", healthy=healthy.text)
+    return render_template("test.html", healthy=healthy.text)
 
 
 @app.route("/getLower", methods=["POST"])
@@ -106,13 +79,15 @@ def get_lower_data():
 @app.route("/startsampleprocess", methods=["GET"])
 @ensure_session
 def startsampleprocess():
+    print("ayayayay"*10)
     result = sample_process.apply_async(args=[session.get("_id")])
+    print("*"*20,result,"*"*20,sep="\n")
     return jsonify({"task_id": result.id})
 
 
 # route to check if a task is done
 @app.get("/task/<id>")
-@ensure_session
+# @ensure_session
 def task_result(id: str) -> dict[str, object]:
     task = AsyncResult(id)
     return jsonify(

@@ -10,11 +10,10 @@ dependencies = [
   "celery",
   "Flask-Session[redis]",
   "flask-talisman",
-  "turbo-flask",
   "fastapi[standard]",
   "tqdm",
   "gunicorn",
   "werkzeug",
   "setuptools",
-  "flask-static-digest"
+  "flask-static-digest",
 ]
