@@ -14,15 +14,7 @@ docker compose ps
 docker compose down
 ```
 
-
-# manual sphinx run
-
-[see](https://github.com/cimarieta/sphinx-autodoc-example)
-```zsh
-# cd into docs directory
-cd docs/
-# generate source files from module
-sphinx-apidoc -f -o ../docs/source ../projekt_4
-# generate html docs in docs/build/html
-make html
-```
+run with `docker compose up -d --build` from root
+install yarn/npm packages with `yarn add ... --modules-folder node_modules` from ./assets
+install python dependencies/packages with `uv ...` from root
+activate python enviroment with `uv sync`

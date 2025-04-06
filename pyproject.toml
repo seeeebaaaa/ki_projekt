@@ -1,11 +1,20 @@
-[build-system]
-requires = ["setuptools >= 61.0"]
-build-backend = "setuptools.build_meta"
-
 [project]
 name = "projekt_4"
-version = "2020.0.0"
-dependencies = []
-requires-python = ">=3.12"
-description = "A lovely Hello World Program."
-readme = "README.rst"
+version = "0.1.0"
+description = "An example Flask app running in Docker."
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+  "flask",
+  "requests",
+  "celery",
+  "Flask-Session[redis]",
+  "flask-talisman",
+  "turbo-flask",
+  "fastapi[standard]",
+  "tqdm",
+  "gunicorn",
+  "werkzeug",
+  "setuptools",
+  "flask-static-digest"
+]
