@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Main Page</title>
+    <style type="text/css">
+        @font-face {
+            font-family: 'Inter';
+            font-style: NORMAL;
+            font-weight: 300;
+            font-display: swap;
+            src: url({{ static_url_for('static', filename='fonts/Inter-VariableFont_opsz,wght.ttf') }}) format('ttf');
+          }
+    </style>
+    <link rel="stylesheet" href="{{ static_url_for('static', filename='css/app.css') }}" />
+    <!-- <link rel="stylesheet" href="{{ static_url_for('static', filename='css/tree.css') }}" /> -->
+    <!-- <link rel="stylesheet" href="{{ static_url_for('static', filename='js/jquery-ui-1.14.1-2.custom/jquery-ui.min.css') }}" /> -->
+    <script>
+        const SCRIPT_ROOT = {{ request.script_root|tojson }};
+        const URLS = {
+            'startsampleprocess': _ => SCRIPT_ROOT + '/startsampleprocess',
+            'task_result': id => SCRIPT_ROOT + '/task/' + id
+        };
+    </script>
+    <!-- <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='js/jquery-ui-1.14.1-2.custom/jquery-ui.min.js') }}"></script> -->
+    <!-- <script src="{{ url_for('static', filename='js/tree.js') }}"></script> -->
+    <script type="module" src="{{ url_for('static', filename='js/app.js') }}"></script>
+</head>
+
+<body>
+    <div class="nav">
+        <div class="left">
+            <div class="logo">Projekt 4</div>
+        </div>
+        <div class="center">
+            <div class="git-link">
+                <div class="input">
+                    https://github.com/seeeebaaaa/ki_projekt.git
+                </div>
+                <button class="switch">
+                    {{ inline_svg('refresh-double.svg') }}
+                </button>
+            </div>
+        </div>
+        <div class="right"></div>
+    </div>
+    <!-- concept is, that eacht one of thsoe can be hidden or shown, to display something, as they arent shown simultaneously -->
+    <div class="main hidden">
+        <!-- Show progress bar on the top (like a navbar) with the original input field in the center -->
+        <div class="bar"></div>
+         <!-- in the page center show 1/3 toggleble file list and 2/3 code editor -->
+         <div class="content">
+            <!-- show file structure to select -->
+            <div class="files">
+                <!-- <div class="tree">
+                    <div class="section">
+                        <div class="head item">
+                            <div class="action">{{ inline_svg('minus.svg') }}</div>
+                            <div class="symbol">{{ inline_svg('folder.svg') }}</div>
+                            <div class="name">Folder</div>
+                            <input type="checkbox" name="" id="" class="checkbox">
+                        </div>
+                        <div class="group">
+                            <div class="line">
+                                <div></div>
+                            </div>
+                            <div class="items">
+                                <div class="leaf item">
+                                    <div class="symbol">{{ inline_svg('page.svg') }}</div>
+                                    <div class="name">File A.txt</div>
+                                    <input type="checkbox" name="" id="" class="checkbox">
+                                </div>
+                                <div class="leaf item">
+                                    <div class="symbol">{{ inline_svg('page.svg') }}</div>
+                                    <div class="name">File B.txt</div>
+                                    <input type="checkbox" name="" id="" class="checkbox">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+            </div>
+            <!-- container for the CodeMirror editor -->
+            <div class="editor"></div>
+            <!-- dialog box to e.g. select which branch etc -->
+            <div class="selection"></div>
+         </div>
+    </div>
+    <div class="entry">
+        <div class="title">
+            Generate and update a project's documentation directly from your browser
+        </div>
+        <div class="subtitle">
+            Just enter the URL to a git repository and click start
+        </div>
+        <div class="input-container">
+            <div class="input">
+                <input type="text" name="entry_input" id="entry_input" placeholder="Enter URL to a git repo" />
+            </div>
+            <button type="button" disabled="true">Start</button>
+        </div>
+    </div>
+    <div class="popup hidden"></div>
+    <div class="imprint">
+        <div>Impressum</div>
+        <div>Datenschutz</div>
+    </div>
+</body>
+
+</html>

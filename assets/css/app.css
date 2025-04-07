@@ -1,0 +1,312 @@
+/* needs to be declared first thing */
+@import url("tree.css");
+
+/*\
+ * Declare site varaibles
+\*/
+:root {
+  --c-text: rgb(255, 255, 255);
+  --c-text-scnd: rgb(195, 195, 195);
+  --c-bg-main: hsl(239, 74%, 20%);
+  --c-bg-down: hsl(240, 20%, 20%);
+  --r-border: 0.5em;
+  --c-bg-dark: rgba(41, 41, 41, 0.2);
+  --c-bg-light: rgba(255, 255, 255, 0.1);
+  --w-symbol: 2px;
+}
+
+/*\
+ * Reset CSS on some elements
+\*/
+
+
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  font-size: max(15px, 0.8vw);
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+input[type='text'] {
+  background: none;
+  color: inherit;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: text;
+  outline: inherit;
+  width: auto;
+  height: auto;
+}
+
+button {
+  background: none;
+  color: inherit;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
+  width: auto;
+  height: auto;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/*\
+ * CSS for the main page
+\*/
+
+body {
+  background: var(--c-bg-down);
+  background: linear-gradient(
+    0deg,
+    var(--c-bg-down) -10%,
+    var(--c-bg-main) 100%
+  );
+  color: var(--c-text);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  min-height: 100vh;
+  width: 100vw;
+}
+
+/*\
+ * CSS for the navigation bar
+\*/
+
+.nav {
+  height: 3em;
+  width: 100vw;
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0em 1em;
+  z-index: 2;
+  background-color: var(--c-bg-main);
+}
+
+.nav > div {
+  flex-grow: 1;
+  flex-basis: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav > .left {
+  justify-content: start;
+}
+
+.nav > .left > .logo {
+  font-size: 1.5em;
+  font-weight: 600;
+  color: var(--c-text);
+  text-decoration: none;
+}
+
+.nav > .center > .git-link {
+  flex-grow: 1;
+  flex-basis: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav > .center > .git-link > .input {
+  min-width: 20em;
+  padding: 0.1em 0.5em;
+  color: var(--c-text-scnd);
+  border: 1px solid black;
+  border-radius: var(--r-border);
+  background-color: var(--c-bg-dark);
+  max-width: 10em;
+  overflow: scroll;
+  /* text-overflow: ellipsis; */
+  white-space: nowrap;
+  scrollbar-width: none;
+}
+.nav > .center > .git-link > .input::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
+
+.nav > .center > .git-link > .switch {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 1em;
+}
+
+.nav > .center > .git-link > .switch > svg {
+  width: 1em;
+  height: 1em;
+}
+
+.nav > .center > .git-link > .switch > svg * {
+  stroke-width: var(--w-symbol);
+  stroke: var(--c-text-scnd);
+}
+
+.nav > .center > .git-link > .switch:hover > svg * {
+  stroke: var(--c-text);
+}
+
+.nav > .right {
+  justify-content: end;
+}
+
+/*\
+ * CSS for the entry content
+\*/
+
+.entry {
+  margin-top: -6em;
+  margin-bottom: 3em;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100vw;
+}
+
+.entry > .title {
+  font-size: 3em;
+  font-weight: 600;
+  color: var(--c-text);
+  text-decoration: none;
+  text-align: center;
+  max-width: 66%;
+}
+
+.entry > .subtitle {
+  margin: 1em 0em;
+  font-size: 1.3em;
+  font-weight: 400;
+  color: var(--c-text);
+  text-decoration: none;
+  text-align: center;
+  max-width: 66%;
+}
+
+.entry > .input-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  gap: 0.5em;
+}
+
+.entry > .input-container > .input {
+  background-color: var(--c-text);
+  border: 2px solid var(--c-text);
+  border-radius: var(--r-border);
+  padding: 0.75em 1em;
+  min-width: 20em;
+  color: var(--c-bg-main);
+}
+
+.entry > .input-container > .input > input {
+  width: 100%;
+}
+
+.entry > .input-container > button {
+  border: 2px solid var(--c-text);
+  border-radius: var(--r-border);
+  color: var(--c-text);
+  padding: 0.75em 1em;
+  font-weight: bolder;
+  background-color: var(--c-bg-dark);
+  transition: 100ms;
+}
+
+.entry > .input-container > button:hover {
+  background-color: var(--c-bg-light);
+}
+
+
+/*\
+* CSS for the main content
+\*/
+
+.main {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    /* substract height of nav bar to ensure correct height */
+    height: calc(100vh - 3em); 
+    width: 100vw;
+    position: relative;
+}
+
+/*\
+ * CSS for the progress bar
+\*/
+.main>.bar {
+  min-height: 5em;
+  width: 100vw;
+  /* position: sticky;
+  top: 3em; */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0em 1em;
+  background-color: var(--c-text);
+}
+.main > .content {
+  flex-grow: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+.main > .content > .files {
+  /* flex-grow: 1; */
+  /* flex-basis: 0; */
+  background-color: var(--c-bg-down);
+  display: flex;
+  flex-direction: column;
+  font-size: 1.1em;
+  min-width: 12em;
+  border-right: 4px solid var(--c-text);
+}
+
+.main > .content > .editor {
+  flex-grow: 2;
+  background-color: rgb(79, 102, 77);
+  min-height: 0;
+}
+.main > .content > .selection {
+  flex-grow: 2;
+  background-color: rgb(98, 102, 77);
+}
+
+/*\
+ * CSS for the footer
+\*/
+.imprint {
+  height: 4em;
+  width: 100vw;
+  background-color: var(--c-bg-down);
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0em 1em;
+}
