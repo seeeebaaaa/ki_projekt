@@ -12,7 +12,21 @@ const buildOptions = {
   loader: { '.css': 'css' },
   minify: isProd,
   sourcemap: !isProd,
-  logLevel: 'info'
+  logLevel: 'info',
+  loader: {
+    '.png': 'file',
+    '.jpg': 'file',
+    '.gif': 'file',
+    '.svg': 'file',
+    '.eot': 'file',
+    '.ttf': 'file',
+    '.woff': 'file',
+    '.woff2': 'file',
+    '.css': 'css',
+  },
+  publicPath: "/css/",
+  assetNames: 'assets/[name]-[hash]', 
+  external: ["images/*"]
 }
 
 async function start() {

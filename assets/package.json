@@ -8,14 +8,10 @@
     "@fsegurai/codemirror-theme-vscode-dark": "^6.1.2",
     "chokidar": "^4.0.3",
     "codemirror": "^6.0.1",
-    "esbuild": "0.25.1",
+    "esbuild": "^0.25.2",
     "esbuild-copy-static-files": "0.1.0",
     "glob": "^11.0.1",
-    "jquery": "3.7.1",
-    "jquery-ui": "1.14.1"
+    "jquery": "^3.7.1"
   },
-  "packageManager": "yarn@4.8.1",
-  "installConfig": {
-    "modulesFolder": "/node_modules"
-  }
+  "packageManager": "yarn@4.8.1"
 }

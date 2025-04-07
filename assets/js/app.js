@@ -1,14 +1,18 @@
 import $ from 'jquery'
 import "./tree"
-import "./utility"
+
+import "./jquery-ui"
 
 import { basicSetup } from 'codemirror'
 import { EditorView } from '@codemirror/view'
 import { python } from "@codemirror/lang-python"
 import { vsCodeDark } from '@fsegurai/codemirror-theme-vscode-dark'
-
+// ensure it is globally availabe, for e.g. jquery-ui
+// window.jQuery = $;
+// window.$ = $;
 $(_ => {
-  $('.main>.content>.files').dlResizeable()
+  window.jQuery = $
+  $('.main>.content>.files').resizable()
 
   const fullHeightEditor = EditorView.theme({
     '&': { height: '100%' },

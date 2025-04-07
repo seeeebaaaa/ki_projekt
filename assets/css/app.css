@@ -1,5 +1,6 @@
 /* needs to be declared first thing */
 @import url("tree.css");
+@import url("jquery-ui.css");
 
 /*\
  * Declare site varaibles
