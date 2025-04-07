@@ -91,13 +91,21 @@ yarn:build:js() {
 }
 
 yarn:build:css() {
+  # if [ "${NODE_ENV}" != "production" ]; then
+  #   mkdir -p ../public
+  #   ln -sf css ../public/css
+  # else
+  #   mkdir -p ../public/css
+  #   cp css/* ../public/css/
+  # fi
   mkdir -p ../public/css
   cp css/* ../public/css/
+  node css-watch.mjs
 }
 
 clean() {
   # Remove cache and other machine generates files
-  rm -rf public/*.* public/js public/css public/images public/fonts public/svg \
+  rm -rf public/*.* public/js public/css public/images public/svg public/fonts \
     celerybeat-schedule
 
   touch public/.keep

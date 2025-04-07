@@ -1,3 +1,6 @@
+/* needs to be declared first thing */
+@import url("tree.css");
+
 /*\
  * Declare site varaibles
 \*/
@@ -15,6 +18,8 @@
 /*\
  * Reset CSS on some elements
 \*/
+
+
 
 * {
   box-sizing: border-box;
@@ -112,7 +117,15 @@ body {
   text-decoration: none;
 }
 
-.nav > .center > .input {
+.nav > .center > .git-link {
+  flex-grow: 1;
+  flex-basis: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav > .center > .git-link > .input {
   min-width: 20em;
   padding: 0.1em 0.5em;
   color: var(--c-text-scnd);
@@ -125,28 +138,28 @@ body {
   white-space: nowrap;
   scrollbar-width: none;
 }
-.nav > .center > .input::-webkit-scrollbar {
+.nav > .center > .git-link > .input::-webkit-scrollbar {
   display: none; /* Safari and Chrome */
 }
 
-.nav > .center > .switch {
+.nav > .center > .git-link > .switch {
   display: flex;
   justify-content: center;
   align-items: center;
   margin-left: 1em;
 }
 
-.nav > .center > .switch > svg {
+.nav > .center > .git-link > .switch > svg {
   width: 1em;
   height: 1em;
 }
 
-.nav > .center > .switch > svg * {
+.nav > .center > .git-link > .switch > svg * {
   stroke-width: var(--w-symbol);
   stroke: var(--c-text-scnd);
 }
 
-.nav > .center > .switch:hover > svg * {
+.nav > .center > .git-link > .switch:hover > svg * {
   stroke: var(--c-text);
 }
 
@@ -275,10 +288,7 @@ body {
 .main > .content > .editor {
   flex-grow: 2;
   background-color: rgb(79, 102, 77);
-}
-.main > .content > .editor {
-  flex-grow: 2;
-  background-color: rgb(79, 102, 77);
+  min-height: 0;
 }
 .main > .content > .selection {
   flex-grow: 2;

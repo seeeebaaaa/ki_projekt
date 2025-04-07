@@ -107,6 +107,9 @@ COPY --chown=python:python --from=app-build /home/python/.local /home/python/.lo
 COPY --from=app-build /usr/local/bin/uv /usr/local/bin/uvx /usr/local/bin/
 COPY --chown=python:python . .
 
+RUN if [ "${FLASK_DEBUG}" == "true" ]; then \
+  ln -s /public /app/public; fi
+
 RUN if [ "${FLASK_DEBUG}" != "true" ]; then \
   ln -s /public /app/public && SECRET_KEY=dummy flask digest compile && rm -rf /app/public; fi
 

@@ -2,9 +2,15 @@
   "name": "projekt_4",
   "private": true,
   "dependencies": {
+    "@codemirror/highlight": "^0.19.8",
+    "@codemirror/lang-python": "^6.1.7",
+    "@codemirror/theme-one-dark": "^6.1.2",
+    "@fsegurai/codemirror-theme-vscode-dark": "^6.1.2",
+    "chokidar": "^4.0.3",
     "codemirror": "^6.0.1",
     "esbuild": "0.25.1",
     "esbuild-copy-static-files": "0.1.0",
+    "glob": "^11.0.1",
     "jquery": "3.7.1",
     "jquery-ui": "1.14.1"
   }

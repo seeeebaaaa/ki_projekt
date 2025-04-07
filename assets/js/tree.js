@@ -1,4 +1,6 @@
-async function buildTree (paths) {
+import $ from "jquery"
+
+async function buildTree(paths) {
   const root = {}
 
   // Step 1: Build nested object structure
@@ -90,12 +92,14 @@ async function buildTree (paths) {
   return await cT(root, $('<div></div>').addClass('tree'))
 }
 
-async function getSVG (svgName) {
-  r = await fetch('/static/svg/' + svgName)
+async function getSVG(svgName) {
+  const r = await fetch('svg/' + svgName)
   return await r.text()
 }
 
-async function load_tree (paths) {
-  tree = await buildTree(paths)
+export async function load_tree (paths) {
+  const tree = await buildTree(paths)
   $('.main>.content>.files').html(tree)
 }
+
+window.load_tree = load_tree

@@ -55,6 +55,7 @@ def ensure_session(f):
         if "_id" not in session:
             print("[ENSURE_SESSION] No ID set, assinging new id..")
             session["_id"] = uuid.uuid1()
+            return redirect(url_for("home"))
         # print("=" * 20)
         return f(*args, **kwargs)
 
@@ -63,12 +64,11 @@ def ensure_session(f):
 @app.route("/", methods=["GET"])
 @ensure_session
 def home():
-    # return render_template("index.html")
-    healthy = requests.get("http://ast:5000/healthy")
-    return render_template("test.html", healthy=healthy.text)
+    return render_template("index.html")
 
 
 @app.route("/getLower", methods=["POST"])
+@ensure_session
 def get_lower_data():
     data = request.json
     code = data["code"]

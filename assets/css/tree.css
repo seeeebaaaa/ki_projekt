@@ -3,7 +3,8 @@
   flex-direction: column;
   align-items: stretch;
   font-size: 1em;
-  overflow-y: scroll;
+  overflow-y: auto;
+  background-color: rgb(86, 119, 75);
 }
 .tree .section {
   display: flex;
