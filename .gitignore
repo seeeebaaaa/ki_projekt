@@ -102,7 +102,14 @@ assets/node_modules/
 # Optional eslint cache
 .eslintcache
 
-
+# yarn
+*/.yarn/
+!.yarn/cache
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
 
 ### OSX #######################################################################
 

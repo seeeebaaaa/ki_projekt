@@ -13,5 +13,9 @@
     "glob": "^11.0.1",
     "jquery": "3.7.1",
     "jquery-ui": "1.14.1"
+  },
+  "packageManager": "yarn@4.8.1",
+  "installConfig": {
+    "modulesFolder": "/node_modules"
   }
 }

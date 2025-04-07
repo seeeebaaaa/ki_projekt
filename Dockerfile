@@ -14,9 +14,14 @@ RUN apt-get update \
   && groupmod -g "${GID}" node && usermod -u "${UID}" -g "${GID}" node \
   && mkdir -p /node_modules && chown node:node -R /node_modules /app
 
+RUN npm install -g corepack
+
 USER node
 
 COPY --chown=node:node assets/package.json assets/*yarn* ./
+
+
+RUN corepack enable
 
 RUN yarn install && yarn cache clean
 
