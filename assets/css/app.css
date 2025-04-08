@@ -326,18 +326,18 @@ body {
 }
 
 .main > .content > .files > .select > span.ui-selectmenu-button {
-  background-color: var(--c-bg-main);
+  background-color: var(--c-bg-down);
   border: 1px solid var(--c-text);
   color: var(--c-text);
   width: 10em;
   max-width: 10em;
 }
 .ui-selectmenu-optgroup {
-  background-color: var(--c-bg-main);
+  background-color: var(--c-bg-down);
 }
 
 .ui-menu-item-wrapper {
-  background-color: var(--c-bg-main);
+  background-color: var(--c-bg-down);
 }
 
 .main > .content > .files > .none {

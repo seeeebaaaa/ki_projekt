@@ -40,6 +40,20 @@ def ensure_session(f):
 def home():
     return render_template("index.html")
 
+@app.post("/start")
+@ensure_session
+def start():
+    print("S"*5,session.get("_id"),"S"*5,sep="\n")
+    data = request.json
+    git_link = data.get('git_link')
+    if not validators.url(git_link):
+        return jsonify({"error":"Not a valid url"})
+    # create task
+    result = start_process.apply_async(args=[session.get("_id")])
+    print("*"*20,"Task Created under id:",result,"*"*20,sep="\n")
+    session["task_id"] = result.id
+    return jsonify({"success": "Task created"})
+
 # route to check if a task is done
 @app.get("/progress")
 @ensure_session
@@ -59,18 +73,6 @@ def progress() -> dict[str, object]:
         }
     )
 
-@app.post("/start")
-@ensure_session
-def start():
-    print("S"*5,session.get("_id"),"S"*5,sep="\n")
-    data = request.json
-    git_link = data.get('git_link')
-    if not validators.url(git_link):
-        return jsonify({"error":"Not a valid url"})
-    # create task
-    result = start_process.apply_async(args=[session.get("_id")])
-    print("*"*20,"Task Created under id:",result,"*"*20,sep="\n")
-    session["task_id"] = result.id
-    return jsonify({"success": "Task created"})
+
 
 

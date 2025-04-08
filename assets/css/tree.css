@@ -4,6 +4,7 @@
   align-items: stretch;
   font-size: 1em;
   overflow-y: auto;
+  padding-left: 0.5em;
 }
 .tree .section {
   display: flex;
@@ -37,10 +38,16 @@
 }
 
 .tree .section .group {
+  display: none;
+}
+
+.tree .section .group.open {
   display: flex;
   flex-direction: row;
   align-items: stretch;
 }
+
+
 
 .tree .section .group .line {
   width: 1em;

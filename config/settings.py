@@ -2,7 +2,11 @@ import os
 from redis import Redis
 from distutils.util import strtobool
 
+# DO NOT EVER generate a key on the fly here, as each gunicorn
+# worker will get a different secret, so every requests is outdated,
+# as soon as it hits another worker
 SECRET_KEY = os.environ["SECRET_KEY"]
+
 DEBUG = bool(strtobool(os.getenv("FLASK_DEBUG", "false")))
 
 SERVER_NAME = os.getenv(
@@ -17,9 +21,10 @@ CELERY_CONFIG = {
     "broker_url": REDIS_URL,
     "result_backend": REDIS_URL,
     "include": [],
-    "task_ignore_result":True,
+    "task_ignore_result": True,
 }
 
 # flask sessions
 SESSION_TYPE = "redis"
 SESSION_REDIS = Redis.from_url(url=REDIS_URL)
+SESSION_USE_SIGNER = True

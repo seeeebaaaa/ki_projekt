@@ -15,28 +15,7 @@ async function buildTree(paths) {
     })
   })
 
-  // Step 2: Recursively build HTML using jQuery
-  function createTree (obj) {
-    const $section = $('<ul></ul>')
-    for (const key in obj) {
-      const $li = $('<li></li>')
-      if (obj[key] === null) {
-        $li.html($('<div>' + key + '</div>').addClass('element')) // file
-        $li.addClass('file')
-      } else {
-        const $details = $('<details></details>')
-        const $summary = $('<summary></summary>')
-          .html($('<div>' + key + '</div>').addClass('element'))
-          .addClass('folder')
-        $details.append($summary)
-        $details.append(createTree(obj[key]))
-        $li.append($details)
-      }
-      $section.append($li)
-    }
-    return $section
-  }
-  async function cT (tree, $root) {
+  async function cT (tree, $root,path_til_now) {
     for (const key in tree) {
       if (tree[key] === null) {
         // key is a file, so add leaf to root
@@ -46,6 +25,8 @@ async function buildTree(paths) {
         $root.append(
           $('<div></div>')
             .addClass('leaf item')
+            .on("click", open_file)
+            .attr("path",path_til_now+"/"+key)
             .append(
               $('<div></div>')
                 .addClass('symbol')
@@ -59,6 +40,8 @@ async function buildTree(paths) {
         const $section = $('<div></div>').addClass('section')
         const $head = $('<div></div>')
           .addClass('head item')
+          .on("click", unfold_section)
+          .attr("path",path_til_now+"/"+key)
           .append(
             $('<div></div>')
               .addClass('action')
@@ -82,25 +65,49 @@ async function buildTree(paths) {
         $head.append($checkbox)
         $group.append($items)
         $section.append($group)
-        await cT(tree[key], $items)
+        await cT(tree[key], $items,path_til_now+"/"+key)
         $root.append($section)
       }
     }
     return $root
   }
 
-  return await cT(root, $('<div></div>').addClass('tree'))
+  return await cT(root, $('<div></div>').addClass('tree'),"")
 }
 
+const stored_images = {}
+
 async function getSVG(svgName) {
+  // check if already loaded for performance
+  if (stored_images[svgName])
+    return stored_images[svgName]
+
   const r = await fetch('svg/' + svgName)
-  return await r.text()
+  const text = await r.text()
+  stored_images[svgName] = text
+  return text
 }
 
 export async function load_tree (paths) {
   const tree = await buildTree(paths)
   $('.main>.content>.files>.none').hide()
+  $('.main>.content>.files>.tree').remove()
   $('.main>.content>.files').append(tree)
 }
 
 window.load_tree = load_tree
+
+
+
+// tree functions
+
+const unfold_section = e => {
+  const head_item = $(e.currentTarget)
+  head_item.siblings().toggleClass("open")
+}
+
+const open_file = e => {
+  const item = $(e.currentTarget)
+  console.log(`Request file from server.. (${item.attr("path")})`);
+  
+}
