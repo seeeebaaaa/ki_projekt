@@ -2,7 +2,7 @@ import $ from 'jquery'
 import "./utility"
 import "./entry"
 import "./tree"
-import "./progress-bar"
+import "./progress"
 import "./jquery-ui"
 
 import { basicSetup } from 'codemirror'
@@ -17,6 +17,8 @@ $(_ => {
     handles: "e", // only allow resizing on the right side of the box,
     minWidth: $('.main>.content>.files').css("min-height")
   })
+
+  $('.main>.content>.files>.select>select').selectmenu()
 
   const fullHeightEditor = EditorView.theme({
     '&': { height: '100%' },

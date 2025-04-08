@@ -21,7 +21,9 @@
         const SCRIPT_ROOT = {{ request.script_root|tojson }};
         const URLS = {
             'startsampleprocess': _ => SCRIPT_ROOT + '/startsampleprocess',
-            'task_result': id => SCRIPT_ROOT + '/task/' + id
+            'task_result': id => SCRIPT_ROOT + '/task/' + id,
+            'progress': _ => SCRIPT_ROOT + '/progress',
+            'start': _=> SCRIPT_ROOT + "/start"
         };
     </script>
     <!-- <script src="https://code.jquery.com/jquery-3.7.1.min.js"
@@ -49,7 +51,7 @@
         <div class="right"></div>
     </div>
     <!-- concept is, that eacht one of thsoe can be hidden or shown, to display something, as they arent shown simultaneously -->
-    <div class="main hidden">
+    <div class="main">
         <!-- Show progress bar on the top (like a navbar) with the original input field in the center -->
         <div class="bar">
             <!-- Steps:
@@ -72,10 +74,10 @@
                 </div>
                 <div class="connector">
                     <div class="text">
-                            <span>Cloning Repo</span>
+                            <span></span>
                     </div>
                     <div class="line"></div>
-                    <div class="status">...</div>
+                    <div class="status"></div>
                 </div>
                 <div class="step">
                     <div class="ball">{{ inline_svg('page-star.svg') }}</div>
@@ -83,10 +85,10 @@
                 </div>
                 <div class="connector">
                     <div class="text">
-                            <span>Selecting branch..</span>
+                            <span></span>
                     </div>
                     <div class="line"></div>
-                    <div class="status">...</div>
+                    <div class="status"></div>
                 </div>
                 <div class="step">
                     <div class="ball">{{ inline_svg('magic-wand.svg') }}</div>
@@ -94,10 +96,10 @@
                 </div>
                 <div class="connector">
                     <div class="text">
-                            <span>Prompting LLM..</span>
+                            <span></span>
                     </div>
                     <div class="line"></div>
-                    <div class="status">...</div>
+                    <div class="status"></div>
                 </div>
                 <div class="step">
                     <div class="ball">{{ inline_svg('brain-research.svg') }}</div>
@@ -105,10 +107,10 @@
                 </div>
                 <div class="connector">
                     <div class="text">
-                            <span>Progress X%</span>
+                            <span></span>
                     </div>
                     <div class="line"></div>
-                    <div class="status">...</div>
+                    <div class="status"></div>
                 </div>
                 <div class="step">
                     <div class="ball">{{ inline_svg('shopping-bag.svg') }}</div>
@@ -116,10 +118,10 @@
                 </div>
                 <div class="connector">
                     <div class="text">
-                            <span>Aplying changes...</span>
+                            <span></span>
                     </div>
                     <div class="line"></div>
-                    <div class="status">...</div>
+                    <div class="status"></div>
                 </div>
                 <div class="step">
                     <div class="ball">{{ inline_svg('html5.svg') }}</div>
@@ -127,10 +129,10 @@
                 </div>
                 <div class="connector">
                     <div class="text">
-                            <span>Generating docs..</span>
+                            <span></span>
                     </div>
                     <div class="line"></div>
-                    <div class="status">...</div>
+                    <div class="status"></div>
                 </div>
                 <div class="step">
                     <div class="ball">{{ inline_svg('download.svg') }}</div>
@@ -142,43 +144,35 @@
          <div class="content">
             <!-- show file structure to select -->
             <div class="files">
-                <!-- <div class="tree">
-                    <div class="section">
-                        <div class="head item">
-                            <div class="action">{{ inline_svg('minus.svg') }}</div>
-                            <div class="symbol">{{ inline_svg('folder.svg') }}</div>
-                            <div class="name">Folder</div>
-                            <input type="checkbox" name="" id="" class="checkbox">
-                        </div>
-                        <div class="group">
-                            <div class="line">
-                                <div></div>
-                            </div>
-                            <div class="items">
-                                <div class="leaf item">
-                                    <div class="symbol">{{ inline_svg('page.svg') }}</div>
-                                    <div class="name">File A.txt</div>
-                                    <input type="checkbox" name="" id="" class="checkbox">
-                                </div>
-                                <div class="leaf item">
-                                    <div class="symbol">{{ inline_svg('page.svg') }}</div>
-                                    <div class="name">File B.txt</div>
-                                    <input type="checkbox" name="" id="" class="checkbox">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
+                <div class="select">
+                    <label for="branch">{{ inline_svg('git-fork.svg') }}</label>
+                    <select name="branch" id="branch">
+                      <option selected="selected" value="" disabled selected>Select Branch</option>
+                      <!-- <option value="a">main</option> -->
+                    </select>
+                </div>
+                <div class="none">
+                    No files loaded
+                </div>
             </div>
             <!-- container for the CodeMirror editor -->
             <div class="editor hidden"></div>
             <!-- dialog box to e.g. select which branch etc -->
-            <div class="selection">
+            <div class="selection hidden">
 
+            </div>
+            <!-- from https://www.html-code-generator.com/css/loading-animation?type=circle&page=1#modal -->
+            <div class="loading">
+                <div class="loader-circle-11">
+                    <div class="arc"></div>
+                    <div class="arc"></div>
+                    <div class="arc"></div>
+                  </div>
+                <span>Waiting for progress..</span>
             </div>
          </div>
     </div>
-    <div class="entry">
+    <div class="entry hidden">
         <div class="title">
             Generate and update a project's documentation directly from your browser
         </div>

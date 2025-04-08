@@ -47,6 +47,40 @@ export const update_progress = (step, text="", status="") => {
     }
 }
 
+const get_progress = async _ => {
+    const response = await fetch(URLS.progress(), {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json'
+        }
+    })
+    return await response.json()
+    
+}
+
+
+let poll = null
+export const poll_progress = (interval=200) => {
+    const polling_function = async _ => {
+        try {
+            // get current progress
+            const re = await get_progress()
+            console.log(re);
+            // apply progress
+
+            // quit if done (in theory go somewhere else, liek download page)
+            if (re.ready) {
+                clearInterval(poll)
+              }
+        } catch (e) {
+            console.log(e);
+            
+            clearInterval(poll)
+        }
+    }
+    poll = setInterval(polling_function,interval)
+}
+
 // window.start_step = start_step
 // window.update_progress = update_progress
 $(_ => {})

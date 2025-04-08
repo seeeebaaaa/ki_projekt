@@ -1,6 +1,5 @@
 from flask import Flask, jsonify, request, render_template, session, redirect, url_for
 from markupsafe import Markup
-from celery import Celery, Task
 from flask_session import Session
 import requests
 import os
@@ -11,6 +10,8 @@ from functools import wraps
 from celery.result import AsyncResult
 from flask_static_digest import FlaskStaticDigest
 import validators
+from time import sleep
+from celery import Celery, Task, shared_task, current_task
 
 app = Flask(__name__,static_folder="../public",static_url_path="")
 app.config.from_object("config.settings")
@@ -70,10 +71,11 @@ def home():
 @app.get("/progress")
 @ensure_session
 def progress() -> dict[str, object]:
-    task_id = session.get(["task_id"])
+    task_id = session.get("task_id")
     if not task_id:
         return jsonify({"error":"You dont have any running task!"})
     task = AsyncResult(task_id)
+    print("="*5,task_id,task,task.info,"="*5,sep="\n")
     return jsonify(
         {
             "state":task.state,
@@ -87,8 +89,24 @@ def progress() -> dict[str, object]:
 @app.post("/start")
 @ensure_session
 def start():
+    print("S"*5,session.get("_id"),"S"*5,sep="\n")
     data = request.json
     git_link = data.get('git_link')
     if not validators.url(git_link):
         return jsonify({"error":"Not a valid url"})
-    return "yay"
+    # create task
+    result = start_process.apply_async(args=[session.get("_id")])
+    print("*"*20,"Task Created under id:",result,"*"*20,sep="\n")
+    session["task_id"] = result.id
+    return jsonify({"success": "Task created"})
+
+@shared_task(ignore_result=False)
+def start_process(session_id):
+    for i in range(1, 11):  # Simulate a 10-step task
+        sleep(i/4)
+        current_task.update_state(
+            state="PROGRESS", meta={"progress": i / 10, "session_id": session_id}
+        )
+    current_task.update_state(
+        state="SUCCESS", meta={"endergebnis": "Task Completed Successfully!"}
+    )

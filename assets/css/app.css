@@ -2,6 +2,7 @@
 @import url("tree.css");
 @import url("jquery-ui.css");
 @import url("progress-bar.css");
+@import url("loaders.css");
 /*\
  * Declare site varaibles
 \*/
@@ -15,6 +16,7 @@
   --c-bg-light: rgba(255, 255, 255, 0.1);
   --w-symbol: 2px;
   --a-flash: rgb(208, 30, 30);
+  --c-border: rgba(38, 38, 38, 1);
 }
 
 
@@ -295,6 +297,53 @@ body {
   border-right: 4px solid var(--c-text);
 }
 
+.main > .content > .files > .select {
+  height:3em;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; 
+  padding: 0em 0.5em;
+  border-bottom: 2px solid var(--c-border);
+}
+
+.main > .content > .files > .select > label > svg{
+  width: 1.6em;
+  height: 1.6em;
+}
+
+.main > .content > .files > .select > label > svg * {
+  stroke: var(--c-text);
+  stroke-width: var(--w-symbol);
+}
+
+.main > .content > .files > .select > .ui-selectmenu-icon {
+  display: none;
+}
+
+.main > .content > .files > .select > .ui-selectmenu-text {
+  margin: 0px;
+}
+
+.main > .content > .files > .select > span.ui-selectmenu-button {
+  background-color: var(--c-bg-main);
+  border: 1px solid var(--c-text);
+  color: var(--c-text);
+  max-width: 10em;
+}
+.ui-selectmenu-optgroup {
+  background-color: var(--c-bg-main);
+
+}
+
+.main > .content > .files > .none {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+} 
+
 .main > .content > .editor {
   flex-grow: 2;
   background-color: rgb(79, 102, 77);
@@ -303,6 +352,20 @@ body {
 .main > .content > .selection {
   flex-grow: 2;
   background-color: var(--c-bg-down);
+}
+.main > .content > .loading {
+  flex-grow: 2;
+  background-color: var(--c-bg-down);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.main > .content > .loading > span {
+  font-size: 1.5em;
+  font-weight: bolder;
+  padding-top: 1em;
 }
 
 /*\
@@ -319,5 +382,5 @@ body {
   align-items: center;
   justify-content: space-around;
   padding: 0em 1em;
-  border-top: 1px solid rgba(38, 38, 38, 1);
+  border-top: 1px solid var(--c-border);
 }

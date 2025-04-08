@@ -1,11 +1,12 @@
 import * as util from './utility'
+import { poll_progress } from './progress'
 /*
  * This Script contains all entry relreted scripts
  *
  *
  *
  */
-const entry_start = _ => {
+const entry_start = async _ => {
     // fade out entry screen
     $('.entry').fadeOut({
         duration: 400,
@@ -13,10 +14,30 @@ const entry_start = _ => {
         complete: _ => {
             $('.main').hide().removeClass('hidden').fadeIn(400)
             $('.nav>.center').hide().removeClass('hidden').fadeIn(400)
-            $('.nav>.center>.git-link>.input').text($('.entry>.input-container>.input>input').val())
+            $('.nav>.center>.git-link>.input').text(
+                $('.entry>.input-container>.input>input').val()
+            )
         }
     })
-    // fade in entry screen
+    // start process in backend
+    const re = await (
+        await fetch(URLS.start(), {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ git_link: $('.entry>.input-container>.input>input').val() })
+        })
+    ).json()
+    if (re.error) {
+        // handle error from backend
+        console.log(re.error);
+        
+    } else {
+        // otherwise, start polling for progress updatess
+        poll_progress(1000)
+    }
 }
 
 const entry_input = e => {
@@ -32,8 +53,7 @@ $(_ => {
     $('.entry>.input-container>.input').on('keypress', e => {
         const button = $('.entry>.input-container>button')
         if (e.which == 13) {
-            if (!button.prop('disabled'))
-               button.trigger("click")
+            if (!button.prop('disabled')) button.trigger('click')
         }
     })
 
