@@ -17,11 +17,17 @@ SERVER_NAME = os.getenv(
 REDIS_URL = os.getenv("REDIS_URL", "redis://redis:6379/0")
 
 # Celery.
+rate_limit = "2/s"
 CELERY_CONFIG = {
     "broker_url": REDIS_URL,
     "result_backend": REDIS_URL,
     "include": [],
     "task_ignore_result": True,
+    "task_annotations": {
+        'projekt_4.tasks.ai_parse': {'rate_limit': rate_limit}, 
+        'projekt_4.tasks.ai_prompt': {'rate_limit': rate_limit},  
+        'projekt_4.tasks.review_apply_changes': {'rate_limit': rate_limit},
+    }
 }
 
 # flask sessions

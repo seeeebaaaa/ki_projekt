@@ -6,6 +6,7 @@ from functools import wraps
 from celery.result import AsyncResult
 import validators
 from projekt_4.tasks import flask_app as app, start_process
+from projekt_4.redis_helper import get_progress, init_progress
 
 # svg helper to render them inline
 # Assuming SVGs are in 'static/svg/'
@@ -43,35 +44,27 @@ def home():
 @app.post("/start")
 @ensure_session
 def start():
-    print("S"*5,session.get("_id"),"S"*5,sep="\n")
+    uid = session.get("_id")
     data = request.json
     git_link = data.get('git_link')
     if not validators.url(git_link):
         return jsonify({"error":"Not a valid url"})
     # create task
-    result = start_process.apply_async(args=[session.get("_id")])
-    print("*"*20,"Task Created under id:",result,"*"*20,sep="\n")
-    session["task_id"] = result.id
+    # result = start_process.apply_async(args=[session.get("_id")])
+    # print("*"*20,"Task Created under id:",result,"*"*20,sep="\n")
+    # session["task_id"] = result.id
+    init_progress(uid)
     return jsonify({"success": "Task created"})
 
 # route to check if a task is done
 @app.get("/progress")
 @ensure_session
 def progress() -> dict[str, object]:
-    task_id = session.get("task_id")
-    if not task_id:
-        return jsonify({"error":"You dont have any running task!"})
-    task = AsyncResult(task_id)
-    print("="*5,task_id,task,task.info,"="*5,sep="\n")
-    return jsonify(
-        {
-            "state":task.state,
-            "ready": task.ready(),
-            "successful": task.successful(),
-            "value": task.result if task.ready() else None,
-            "progress":task.info["progress"] if task.info and "progress" in task.info else None,
-        }
-    )
+    uid = session.get("_id")
+    data = get_progress(uid)
+    if not data:
+        return jsonify({"error":"No Running Tasks!"})
+    return jsonify(data)
 
 
 

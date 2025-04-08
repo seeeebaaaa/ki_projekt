@@ -17,3 +17,31 @@ def start_process(session_id):
     current_task.update_state(
         state="SUCCESS", meta={"endergebnis": "Task Completed Successfully!"}
     )
+
+@shared_task(ignore_result=False)
+def start_clone_git(session_id):
+   """Clone the given git into the data volume and provide file structure"""
+   return {}
+
+@shared_task(ignore_result=False)
+def select_switch_branch(session_id,branch_name):
+   """Switch to another branch"""
+   return {}
+
+@shared_task(ignore_result=False)
+def ai_parse(session_id):
+   """Parse selected files"""
+   return {}
+
+@shared_task(ignore_result=False)
+def ai_prompt(session_id):
+   """Prompt AI for changes etc for one instance (this task is created for each change)"""
+   return {}
+
+@shared_task(ignore_result=False)
+def review_apply_changes(session_id):
+   return {}
+
+@shared_task(ignore_result=False)
+def bundle_create_bundle(session_id):
+   return {}
