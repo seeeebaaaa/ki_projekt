@@ -16,4 +16,5 @@ dependencies = [
   "werkzeug",
   "setuptools",
   "flask-static-digest",
+  "validators>=0.34.0",
 ]

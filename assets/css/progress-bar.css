@@ -1,0 +1,110 @@
+.p-bar-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap:1em;
+    width: 100%;
+    height: 100%;
+    font-size: 0.9em;
+}
+
+.p-bar-container > .step {
+    height: 100%;
+    width: 1em;
+    position: relative;
+}
+
+.p-bar-container > .step > .ball {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    width: 2em;
+    height: 2em;
+    border-radius: 50%;
+    background-color: var(--c-text-scnd);
+    color: var(--c-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.p-bar-container > .step.current > .ball {
+    background-color: rgb(255, 241, 47);
+}
+
+.p-bar-container > .step.done > .ball {
+    background-color: greenyellow;
+}
+
+.p-bar-container > .step > .ball > svg {
+    width: 1em;
+    height: 1em;
+}
+
+.p-bar-container > .step > .ball > svg * {
+    stroke: var(--c-bg-main);
+    stroke-width: var(--w-symbol);
+}
+
+.p-bar-container > .step > .text {
+    height: 1.6em;
+    width: 4em;
+    position: absolute;
+    left: 50%;
+    top: calc(50% + 2em);
+    transform: translate(-50%,-50%);
+    color: var(--c-bg-main);
+    font-weight: bolder;
+    font-size: 0.9em;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.p-bar-container > .connector {
+    width: 5em;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.p-bar-container > .connector > div{
+    flex-grow: 1;
+    flex-basis: 0px;
+    min-width: 0;
+} 
+
+.p-bar-container > .connector > .line {
+    max-height: 0.5em;
+    width: 100%;
+    background-color: var(--c-text-scnd);
+    border-radius: var(--r-border);
+}
+
+.p-bar-container > .connector.current > .line {
+    background-color: rgb(255, 241, 47);
+}
+
+.p-bar-container > .connector.done > .line {
+    background-color: greenyellow;
+}
+
+.p-bar-container > .connector > .text {
+    display: flex;
+    align-items: end;
+    justify-content: center;
+}
+
+.p-bar-container > .connector > .text > span {
+    color: var(--c-bg-main);
+    font-size: 0.7em;
+    text-align: center;
+    padding-bottom: 0.5em;
+}
+
+.p-bar-container > .connector > .status {
+    color: var(--c-bg-down);
+}

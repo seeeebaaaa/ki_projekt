@@ -51,7 +51,93 @@
     <!-- concept is, that eacht one of thsoe can be hidden or shown, to display something, as they arent shown simultaneously -->
     <div class="main hidden">
         <!-- Show progress bar on the top (like a navbar) with the original input field in the center -->
-        <div class="bar"></div>
+        <div class="bar">
+            <!-- Steps:
+                - Clone Repo
+                - Select Branch / folders / whole repo 
+                - Wait till LLM starts
+                - Can happen at once:
+                    - Generate LLM responses
+                    - Review responses (Accept/Deny/Edit)
+                - Collect responses and change in code
+                - Create Bundle
+                - Offer Bundle as download 
+                - Sphinx
+                - Offer Sphinx (back to "entry" screen)
+            -->
+            <div class="p-bar-container">
+                <div class="step">
+                    <div class="ball">{{ inline_svg('upload.svg') }}</div>
+                    <div class="text">Start</div>
+                </div>
+                <div class="connector">
+                    <div class="text">
+                            <span>Cloning Repo</span>
+                    </div>
+                    <div class="line"></div>
+                    <div class="status">...</div>
+                </div>
+                <div class="step">
+                    <div class="ball">{{ inline_svg('page-star.svg') }}</div>
+                    <div class="text">Select</div>
+                </div>
+                <div class="connector">
+                    <div class="text">
+                            <span>Selecting branch..</span>
+                    </div>
+                    <div class="line"></div>
+                    <div class="status">...</div>
+                </div>
+                <div class="step">
+                    <div class="ball">{{ inline_svg('magic-wand.svg') }}</div>
+                    <div class="text">AI</div>
+                </div>
+                <div class="connector">
+                    <div class="text">
+                            <span>Prompting LLM..</span>
+                    </div>
+                    <div class="line"></div>
+                    <div class="status">...</div>
+                </div>
+                <div class="step">
+                    <div class="ball">{{ inline_svg('brain-research.svg') }}</div>
+                    <div class="text">Review</div>
+                </div>
+                <div class="connector">
+                    <div class="text">
+                            <span>Progress X%</span>
+                    </div>
+                    <div class="line"></div>
+                    <div class="status">...</div>
+                </div>
+                <div class="step">
+                    <div class="ball">{{ inline_svg('shopping-bag.svg') }}</div>
+                    <div class="text">Bundle</div>
+                </div>
+                <div class="connector">
+                    <div class="text">
+                            <span>Aplying changes...</span>
+                    </div>
+                    <div class="line"></div>
+                    <div class="status">...</div>
+                </div>
+                <div class="step">
+                    <div class="ball">{{ inline_svg('html5.svg') }}</div>
+                    <div class="text">Sphinx</div>
+                </div>
+                <div class="connector">
+                    <div class="text">
+                            <span>Generating docs..</span>
+                    </div>
+                    <div class="line"></div>
+                    <div class="status">...</div>
+                </div>
+                <div class="step">
+                    <div class="ball">{{ inline_svg('download.svg') }}</div>
+                    <div class="text">Download</div>
+                </div>
+            </div>
+        </div>
          <!-- in the page center show 1/3 toggleble file list and 2/3 code editor -->
          <div class="content">
             <!-- show file structure to select -->
@@ -85,9 +171,11 @@
                 </div> -->
             </div>
             <!-- container for the CodeMirror editor -->
-            <div class="editor"></div>
+            <div class="editor hidden"></div>
             <!-- dialog box to e.g. select which branch etc -->
-            <div class="selection"></div>
+            <div class="selection">
+
+            </div>
          </div>
     </div>
     <div class="entry">
@@ -99,9 +187,9 @@
         </div>
         <div class="input-container">
             <div class="input">
-                <input type="text" name="entry_input" id="entry_input" placeholder="Enter URL to a git repo" />
+                <input type="text" name="entry_input" id="entry_input" placeholder="Enter URL to a git repo" value="https://github.com/paulmillr/chokidar.gi"/>
             </div>
-            <button type="button" disabled="true">Start</button>
+            <button type="button" disabled>Start</button>
         </div>
     </div>
     <div class="popup hidden"></div>

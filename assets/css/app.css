@@ -1,7 +1,7 @@
 /* needs to be declared first thing */
 @import url("tree.css");
 @import url("jquery-ui.css");
-
+@import url("progress-bar.css");
 /*\
  * Declare site varaibles
 \*/
@@ -14,7 +14,9 @@
   --c-bg-dark: rgba(41, 41, 41, 0.2);
   --c-bg-light: rgba(255, 255, 255, 0.1);
   --w-symbol: 2px;
+  --a-flash: rgb(208, 30, 30);
 }
+
 
 /*\
  * Reset CSS on some elements
@@ -81,7 +83,6 @@ body {
   min-height: 100vh;
   width: 100vw;
 }
-
 /*\
  * CSS for the navigation bar
 \*/
@@ -127,17 +128,18 @@ body {
 }
 
 .nav > .center > .git-link > .input {
-  min-width: 20em;
+  min-width: 15em;
   padding: 0.1em 0.5em;
   color: var(--c-text-scnd);
   border: 1px solid black;
   border-radius: var(--r-border);
   background-color: var(--c-bg-dark);
-  max-width: 10em;
+  max-width: 25em;
   overflow: scroll;
   /* text-overflow: ellipsis; */
   white-space: nowrap;
   scrollbar-width: none;
+  text-align: center;
 }
 .nav > .center > .git-link > .input::-webkit-scrollbar {
   display: none; /* Safari and Chrome */
@@ -209,6 +211,7 @@ body {
   align-items: center;
   width: 100%;
   gap: 0.5em;
+  cursor: text;
 }
 
 .entry > .input-container > .input {
@@ -234,10 +237,15 @@ body {
   transition: 100ms;
 }
 
-.entry > .input-container > button:hover {
+.entry > .input-container > button:hover:not(:disabled) {
   background-color: var(--c-bg-light);
 }
 
+.entry > .input-container > button:disabled{
+  color: var(--c-text-scnd);
+  border-color: var(--c-text-scnd);
+  cursor: auto;
+}
 
 /*\
 * CSS for the main content
@@ -259,7 +267,7 @@ body {
  * CSS for the progress bar
 \*/
 .main>.bar {
-  min-height: 5em;
+  min-height: 5.6em;
   width: 100vw;
   /* position: sticky;
   top: 3em; */
@@ -269,6 +277,7 @@ body {
   padding: 0em 1em;
   background-color: var(--c-text);
 }
+
 .main > .content {
   flex-grow: 1;
   display: flex;
@@ -293,7 +302,7 @@ body {
 }
 .main > .content > .selection {
   flex-grow: 2;
-  background-color: rgb(98, 102, 77);
+  background-color: var(--c-bg-down);
 }
 
 /*\
@@ -310,4 +319,5 @@ body {
   align-items: center;
   justify-content: space-around;
   padding: 0em 1em;
+  border-top: 1px solid rgba(38, 38, 38, 1);
 }
