@@ -301,9 +301,10 @@ body {
   height:3em;
   display: flex;
   align-items: center;
-  justify-content: space-between; 
+  justify-content: baseline; 
   padding: 0em 0.5em;
   border-bottom: 2px solid var(--c-border);
+  gap:0.5em;
 }
 
 .main > .content > .files > .select > label > svg{
@@ -328,11 +329,15 @@ body {
   background-color: var(--c-bg-main);
   border: 1px solid var(--c-text);
   color: var(--c-text);
+  width: 10em;
   max-width: 10em;
 }
 .ui-selectmenu-optgroup {
   background-color: var(--c-bg-main);
+}
 
+.ui-menu-item-wrapper {
+  background-color: var(--c-bg-main);
 }
 
 .main > .content > .files > .none {

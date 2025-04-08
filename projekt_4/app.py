@@ -1,38 +1,11 @@
-from flask import Flask, jsonify, request, render_template, session, redirect, url_for
+from flask import jsonify, request, render_template, session, redirect, url_for
 from markupsafe import Markup
-from flask_session import Session
-import requests
 import os
-from flask_talisman import Talisman
 import uuid
-from secrets import token_urlsafe
 from functools import wraps
 from celery.result import AsyncResult
-from flask_static_digest import FlaskStaticDigest
 import validators
-from time import sleep
-from celery import Celery, Task, shared_task, current_task
-
-app = Flask(__name__,static_folder="../public",static_url_path="")
-app.config.from_object("config.settings")
-app.secret_key = token_urlsafe()
-Session(app)
-# Talisman(app) #breaks inline script, needs to be configured some how but idfk what
-FlaskStaticDigest(app)
-
-def init_celery_app(app: Flask) -> Celery:
-    class FlaskTask(Task):
-        def __call__(self, *args: object, **kwargs: object) -> object:
-            with app.app_context():
-                return self.run(*args, **kwargs)
-
-    celery_app = Celery(app.name, task_cls=FlaskTask)
-    celery_app.config_from_object(app.config.get("CELERY_CONFIG",{}))
-    celery_app.set_default()
-    app.extensions["celery"] = celery_app
-    return celery_app
-
-celery_app = init_celery_app(app)
+from projekt_4.tasks import flask_app as app, start_process
 
 # svg helper to render them inline
 # Assuming SVGs are in 'static/svg/'
@@ -100,13 +73,4 @@ def start():
     session["task_id"] = result.id
     return jsonify({"success": "Task created"})
 
-@shared_task(ignore_result=False)
-def start_process(session_id):
-    for i in range(1, 11):  # Simulate a 10-step task
-        sleep(i/4)
-        current_task.update_state(
-            state="PROGRESS", meta={"progress": i / 10, "session_id": session_id}
-        )
-    current_task.update_state(
-        state="SUCCESS", meta={"endergebnis": "Task Completed Successfully!"}
-    )
+

@@ -73,7 +73,7 @@ services:
 
   worker:
     <<: *default-app
-    command: celery -A "projekt_4.app.celery_app" worker -l "${CELERY_LOG_LEVEL:-info}"
+    command: celery -A "projekt_4.tasks.celery_app" worker -l "${CELERY_LOG_LEVEL:-info}"
     entrypoint: []
     deploy:
       resources:

@@ -99,7 +99,8 @@ async function getSVG(svgName) {
 
 export async function load_tree (paths) {
   const tree = await buildTree(paths)
-  $('.main>.content>.files').html(tree)
+  $('.main>.content>.files>.none').hide()
+  $('.main>.content>.files').append(tree)
 }
 
 window.load_tree = load_tree
