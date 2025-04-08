@@ -19,7 +19,7 @@ def start_process(session_id):
     )
 
 @shared_task(ignore_result=False)
-def start_clone_git(session_id):
+def start_clone_git(session_id,git_link):
    """Clone the given git into the data volume and provide file structure"""
    return {}
 

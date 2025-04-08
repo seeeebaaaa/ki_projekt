@@ -5,20 +5,24 @@ import uuid
 from functools import wraps
 from celery.result import AsyncResult
 import validators
-from projekt_4.tasks import flask_app as app, start_process
-from projekt_4.redis_helper import get_progress, init_progress
+from projekt_4.tasks import flask_app as app, start_clone_git
+from projekt_4.redis_helper import get_progress, init_progress, save_progress
+
 
 # svg helper to render them inline
 # Assuming SVGs are in 'static/svg/'
 @app.context_processor
 def utility_processor():
     def inline_svg(filename):
-        svg_path = os.path.join(app.static_folder, 'svg', filename)
+        svg_path = os.path.join(app.static_folder, "svg", filename)
         try:
-            with open(svg_path, 'r', encoding='utf-8') as f:
-                return Markup(f.read())  # Markup prevents Jinja from escaping the content
+            with open(svg_path, "r", encoding="utf-8") as f:
+                return Markup(
+                    f.read()
+                )  # Markup prevents Jinja from escaping the content
         except FileNotFoundError:
             return f"<!-- SVG file '{filename}' not found -->"
+
     return dict(inline_svg=inline_svg)
 
 
@@ -36,25 +40,27 @@ def ensure_session(f):
 
     return decorated
 
+
 @app.route("/", methods=["GET"])
 @ensure_session
 def home():
     return render_template("index.html")
+
 
 @app.post("/start")
 @ensure_session
 def start():
     uid = session.get("_id")
     data = request.json
-    git_link = data.get('git_link')
+    git_link = data.get("git_link")
     if not validators.url(git_link):
-        return jsonify({"error":"Not a valid url"})
-    # create task
-    # result = start_process.apply_async(args=[session.get("_id")])
-    # print("*"*20,"Task Created under id:",result,"*"*20,sep="\n")
-    # session["task_id"] = result.id
+        return jsonify({"error": "Not a valid url"})
+    session["git_link"] = git_link
     init_progress(uid)
+    result = start_clone_git.apply_async(args=[session.get("_id"), git_link])
+    save_progress(uid, {"current_task_id": result.id})
     return jsonify({"success": "Task created"})
+
 
 # route to check if a task is done
 @app.get("/progress")
@@ -63,9 +69,5 @@ def progress() -> dict[str, object]:
     uid = session.get("_id")
     data = get_progress(uid)
     if not data:
-        return jsonify({"error":"No Running Tasks!"})
+        return jsonify({"error": "No Running Tasks!"})
     return jsonify(data)
-
-
-
-
