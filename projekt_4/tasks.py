@@ -4,6 +4,7 @@ from celery import shared_task, current_task
 from time import sleep
 import pygit2
 from pathlib import Path
+import shutil
 from projekt_4.redis_helper import save_progress, get_progress
 
 flask_app = create_app()  # -Line 2
@@ -31,11 +32,7 @@ def start_clone_git(session_id):
     user_path: Path = Path("/data") / session_id
     # remove folder if it already exists
     if user_path.exists() and user_path.is_dir():
-        for item in user_path.iterdir():
-            if item.is_dir():
-                item.rmdir()
-            else:
-                item.unlink()
+        shutil.rmtree(user_path)
     # make sure the path exits
     user_path.mkdir(exist_ok=True)
     # clone the repo (callback updates progress)
@@ -45,7 +42,7 @@ def start_clone_git(session_id):
     ]  # remove origin prefix for visibility
     # get files for frontend
     files = [str(p) for p in user_path.glob("**/**")]
-    save_progress(session_id,{"data":{"branches":remote_branches,"files":files},"state":"review","task_state":"ready"})
+    save_progress(session_id,{"data":{"branches":remote_branches,"files":files},"state":"review","task_state":"done"})
     current_task.update_state(state="SUCCESS")
 
 
