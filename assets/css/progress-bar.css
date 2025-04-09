@@ -108,4 +108,5 @@
 
 .p-bar-container > .connector > .status {
     color: var(--c-bg-down);
+    font-size: 0.7em;
 }

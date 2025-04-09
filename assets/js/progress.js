@@ -1,4 +1,5 @@
 import $ from 'jquery'
+import { load_tree } from './tree'
 
 // possible, stati: inactive, current, done
 const states = [
@@ -61,8 +62,8 @@ export const update_progress = (step, text = "", status = "") => {
     if (!is_started(step))
         start_step(step)
     // Assigns the connector after the step the given text and status
-    const index = states.indexOf(step)
-    const connector_index = index * 2
+    const index = states.indexOf(step)*2+1
+    const connector_index = index -1
     const next_connector = $(`.p-bar-container .connector:nth-child(${connector_index + 2})`)
     if (next_connector.length) {
         if (text)
@@ -85,7 +86,7 @@ const get_progress = async _ => {
 
 
 let poll = null
-export const poll_progress = (interval = 200) => {
+export const poll_progress = (cb_loop,cb_end,interval = 200) => {
     let old_state = ""
     const polling_function = async _ => {
         try {
@@ -94,12 +95,12 @@ export const poll_progress = (interval = 200) => {
             console.log(re);
             // quit if done or sth
             if (re.task_state && re.task_state == "done") {
-                console.log("clearend");
+                cb_end(re,old_state)
                 stop_step(old_state)
                 clearInterval(poll)
             }
             // apply progress
-            update_progress(re.state, re.state_text, re.state_status)
+            cb_loop(re)
             old_state = re.state
         } catch (e) {
             console.log(e);
@@ -110,6 +111,19 @@ export const poll_progress = (interval = 200) => {
     poll = setInterval(polling_function,interval)
 }
 
+
+export const git_clone_cb_loop = re => {
+    update_progress(re.state, re.state_text, re.state_status)
+}
+export const git_clone_cb_end = (re,old_state) => {
+    stop_step(old_state)
+    // show file tree
+    load_tree(re.data.files)
+    // hide loading screen
+    $(".main>.content>.loading").hide()
+    $(".main>.content>.selection").removeClass("hidden")
+    // show select screen
+}
 // window.start_step = start_step
 // window.update_progress = update_progress
 $(_ => {})

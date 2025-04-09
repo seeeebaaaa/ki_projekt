@@ -14,7 +14,7 @@
   --r-border: 0.5em;
   --c-bg-dark: rgba(41, 41, 41, 0.2);
   --c-bg-light: rgba(255, 255, 255, 0.1);
-  --w-symbol: 2px;
+  --w-symbol: 0.11em;
   --a-flash: rgb(208, 30, 30);
   --c-border: rgba(38, 38, 38, 1);
 }
@@ -357,7 +357,67 @@ body {
 .main > .content > .selection {
   flex-grow: 2;
   background-color: var(--c-bg-down);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
+
+.main > .content > .selection > div {
+  flex-grow: 2;
+  flex-basis: 0;
+}
+
+.main > .content > .selection > .symbol {
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  align-items: center;
+}
+
+.main > .content > .selection > .symbol > svg {
+  width: 7em;
+  height: 7em;
+}
+
+.main > .content > .selection > .symbol > svg * {
+  stroke: var(--c-text);
+  stroke-width: var(--w-symbol);
+}
+
+.main > .content > .selection > .container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1em;
+  max-width: 30em;
+}
+
+.main > .content > .selection > .container > .title {
+  font-size: 1.5em;
+  font-weight: bolder;
+  text-align: center;
+}
+
+.main > .content > .selection > .container > button {
+  background-color: var(--c-text);
+  color: var(--c-bg-main);
+  padding: 0.3em 1em;
+  border-radius: var(--r-border);
+  font-size: 1.2em;
+  font-weight: bolder;
+}
+
+.main > .content > .selection > .container > button:hover {
+  background-color: var(--c-text-scnd);
+}
+
+.main > .content > .selection > .container > button:disabled {
+  color: var(--c-bg-dark);
+  background-color: var(--c-text-scnd);
+}
+
 .main > .content > .loading {
   flex-grow: 2;
   background-color: var(--c-bg-down);

@@ -1,5 +1,5 @@
 import * as util from './utility'
-import { poll_progress } from './progress'
+import { poll_progress, git_clone_cb_loop, git_clone_cb_end } from './progress'
 /*
  * This Script contains all entry relreted scripts
  *
@@ -36,7 +36,7 @@ const entry_start = async _ => {
         
     } else {
         // otherwise, start polling for progress updatess
-        poll_progress()
+        poll_progress(git_clone_cb_loop,git_clone_cb_end,50)
     }
 }
 

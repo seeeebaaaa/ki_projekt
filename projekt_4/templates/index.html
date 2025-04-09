@@ -159,7 +159,13 @@
             <div class="editor hidden"></div>
             <!-- dialog box to e.g. select which branch etc -->
             <div class="selection hidden">
-
+                <div class="symbol">{{ inline_svg('page-star.svg') }}</div>
+                <div class="container">
+                    <div class="title">Select all the files or folders you want to generate documentation for</div>
+                    <div class="text">Click on the checkbox to select the relevant items.</div>
+                    <button disabled>Process files</button>
+                </div>
+                <div class="fill"></div>
             </div>
             <!-- from https://www.html-code-generator.com/css/loading-animation?type=circle&page=1#modal -->
             <div class="loading">
@@ -167,7 +173,7 @@
                     <div class="arc"></div>
                     <div class="arc"></div>
                     <div class="arc"></div>
-                  </div>
+                </div>
                 <span>Waiting for progress..</span>
             </div>
          </div>

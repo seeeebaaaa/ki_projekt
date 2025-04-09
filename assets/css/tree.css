@@ -1,102 +1,134 @@
 .tree {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  font-size: 1em;
-  overflow-y: auto;
-  padding-left: 0.5em;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    font-size: 1em;
+    overflow-y: auto;
+    padding-left: 0.5em;
 }
 .tree .section {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
 }
 
 .tree .section.closed {
-  display: none;
+    display: none;
 }
 
 .tree .section .head {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
 }
 
 .tree .section .head .action {
-  width: 1em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 0.5em;
+    width: 1em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.5em;
 }
 .tree .section .head .action svg {
-  height: 1.5em;
-  max-width: 1em;
+    height: 1.5em;
+    max-width: 1em;
 }
 
 .tree .section .head .action svg * {
-  stroke: var(--c-text);
+    stroke: var(--c-text);
 }
 
 .tree .section .group {
-  display: none;
+    display: none;
 }
 
 .tree .section .group.open {
-  display: flex;
-  flex-direction: row;
-  align-items: stretch;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
 }
 
-
-
 .tree .section .group .line {
-  width: 1em;
-  position: relative;
-  margin-right: 0.5em;
+    width: 1em;
+    position: relative;
+    margin-right: 0.5em;
 }
 
 .tree .section .group .line div {
-  position: absolute;
-  left: 50%;
-  height: 100%;
-  width: 1px;
-  border-left: 1px solid var(--c-text-scnd);
+    position: absolute;
+    left: 50%;
+    height: 100%;
+    width: 1px;
+    border-left: 1px solid var(--c-text-scnd);
 }
 
 .tree .section .group .items {
-  flex-grow: 1;
+    flex-grow: 1;
 }
 
 .tree .leaf {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
 }
 
 .tree .item .symbol {
-  width: 1em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 0.5em;
+    width: 1em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.5em;
+    cursor: pointer;
+}
+
+.tree .item .name,
+.tree .item .action {
+    cursor: pointer;
 }
 
 .tree .item .symbol svg {
-  height: 1.5em;
-  max-width: 1em;
+    height: 1.5em;
+    max-width: 1em;
 }
 .tree .item .symbol svg * {
   stroke: var(--c-text);
+  stroke-width: var(--w-symbol);
 }
 
 .tree .item .checkbox {
-   margin-left: auto;
-   padding: 0em 1em;
-   position: sticky;
-   right: 0;
+    margin-left: auto;
+    padding: 0em 1em;
+    position: sticky;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.tree .item .checkbox label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.tree .item .checkbox label svg {
+  width: 1em;
+  height: 1em;
+}
+
+.tree .item .checkbox label svg * {
+  stroke: var(--c-text-scnd);
+  stroke-width: var(--w-symbol);
+}
+
+.tree .item .checkbox label:hover svg * {
+  stroke: var(--c-text);
+}
+
+.tree .item .checkbox label:active svg * {
+  stroke: var(--c-text);
+  fill: var(--c-text);
 }
 
 .tree .item:hover {
-  background-color: var(--c-bg-dark);
-  border-radius: var(--r-border);
-  cursor: pointer;
+    background-color: rgba(8, 5, 52, 0.493);
+    border-radius: var(--r-border);
 }

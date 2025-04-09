@@ -23,10 +23,19 @@ def start_process(session_id):
     )
 
 
+class GitProgressCallback(pygit2.RemoteCallbacks):
+
+    def __init__(self, uid, credentials=None, certificate_check=None):
+        super().__init__(credentials, certificate_check)
+        self.uid = uid
+
+    def transfer_progress(self, stats):
+        save_progress(self.uid,{"state_status":f'{stats.indexed_objects}/{stats.total_objects}'})
+
 @shared_task(ignore_result=False)
 def start_clone_git(session_id):
     """Clone the given git into the data volume under the uid and provide file structure"""
-    save_progress(session_id,{"task_state":"started"})# git link
+    save_progress(session_id,{"task_state":"started","state_text":"Cloning Repo.."})# git link
     git_link = get_progress(session_id)["git_link"]
     # user path
     user_path: Path = Path("/data") / session_id
@@ -36,13 +45,14 @@ def start_clone_git(session_id):
     # make sure the path exits
     user_path.mkdir(exist_ok=True)
     # clone the repo (callback updates progress)
-    repo = pygit2.clone_repository(url=git_link, path=user_path)
+    repo = pygit2.clone_repository(url=git_link, path=user_path,callbacks=GitProgressCallback(session_id))
     remote_branches = [
         b.lstrip("origin/") for b in repo.branches.remote
     ]  # remove origin prefix for visibility
     # get files for frontend
-    files = [str(p) for p in user_path.glob("**/**")]
-    save_progress(session_id,{"data":{"branches":remote_branches,"files":files},"state":"review","task_state":"done"})
+    files = [str(p)[len("/data/"+session_id+"/"):] for p in user_path.glob("**/**")]
+    files.remove("") # remove base path
+    save_progress(session_id,{"data":{"branches":remote_branches,"files":files},"state":"select","state_text":"","state_status":"","task_state":"done"})
     current_task.update_state(state="SUCCESS")
 
 
