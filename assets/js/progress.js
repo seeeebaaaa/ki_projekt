@@ -69,7 +69,7 @@ export const poll_progress = (interval=200) => {
             // apply progress
 
             // quit if done (in theory go somewhere else, liek download page)
-            if (re.ready) {
+            if (re.task_state && re.task_state=="done") {
                 clearInterval(poll)
               }
         } catch (e) {

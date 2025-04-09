@@ -2,7 +2,7 @@ from redis import Redis
 from config.settings import REDIS_URL
 
 
-r = Redis.from_url(url=REDIS_URL)
+r = Redis.from_url(url=REDIS_URL,decode_responses=True)
 
 
 def init_progress(uid):
@@ -10,7 +10,8 @@ def init_progress(uid):
         "state":"start",
         "state_text": "",
         "state_status": "",
-        "current_task_id": None
+        "task_state": "",
+        "current_task_id": ""
     }
     save_progress(uid,progress)
 

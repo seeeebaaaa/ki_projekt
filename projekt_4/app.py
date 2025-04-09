@@ -55,9 +55,9 @@ def start():
     git_link = data.get("git_link")
     if not validators.url(git_link):
         return jsonify({"error": "Not a valid url"})
-    session["git_link"] = git_link
     init_progress(uid)
-    result = start_clone_git.apply_async(args=[session.get("_id"), git_link])
+    save_progress(uid,{"git_link":git_link,"task_state":"pending"})
+    result = start_clone_git.apply_async(args=[session.get("_id")])
     save_progress(uid, {"current_task_id": result.id})
     return jsonify({"success": "Task created"})
 
@@ -70,4 +70,5 @@ def progress() -> dict[str, object]:
     data = get_progress(uid)
     if not data:
         return jsonify({"error": "No Running Tasks!"})
+    # TODO: DONT just send out data, for now its okay, but change later pls
     return jsonify(data)
