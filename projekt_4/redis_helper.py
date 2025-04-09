@@ -28,4 +28,7 @@ def save_progress(uid, mapping):
 def get_progress(uid):
     # redis cant use dicts with more than one depth, and lists etc. so just json it instead (see https://stackoverflow.com/questions/75157428/redis-exceptions-dataerror-invalid-input-of-type-dict-convert-to-a-bytes-s)
     dict_json = r.hget(uid,key="data")
-    return json.loads(dict_json)
+    if dict_json:
+        return json.loads(dict_json)
+    else:
+        return {}
