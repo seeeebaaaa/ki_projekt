@@ -17,4 +17,5 @@ dependencies = [
   "setuptools",
   "flask-static-digest",
   "validators>=0.34.0",
+  "pygit2>=1.17.0",
 ]

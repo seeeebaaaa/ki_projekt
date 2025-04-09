@@ -36,7 +36,7 @@ const entry_start = async _ => {
         
     } else {
         // otherwise, start polling for progress updatess
-        poll_progress(1000)
+        poll_progress()
     }
 }
 

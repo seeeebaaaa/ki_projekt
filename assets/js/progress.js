@@ -31,10 +31,35 @@ export const start_step = step => {
         next_connector.removeClass('done').addClass('current')
     }
     ball.removeClass('done').addClass('current')
-    ball.removeClass('done').addClass('current')
 }
 
-export const update_progress = (step, text="", status="") => {
+const is_started = step => {
+    const index = states.indexOf(step)
+    const ball_index = index * 2 + 1
+    const ball = $(`.p-bar-container .step:nth-child(${ball_index})`)
+    return ball.hasClass("current")
+}
+
+
+export const stop_step = step => {
+    // sets the ball and following connector to current
+    const index = states.indexOf(step)
+    const ball_index = index * 2 + 1
+    const connector_index = index * 2
+    const ball = $(`.p-bar-container .step:nth-child(${ball_index})`)
+    const next_connector = $(`.p-bar-container .connector:nth-child(${connector_index+2})`)
+    if (next_connector.length) {
+        next_connector.find('.text span').text('')
+        next_connector.find('.status').text('')
+        next_connector.removeClass('current').addClass('done')
+    }
+    ball.removeClass('current').addClass('done')
+}
+
+export const update_progress = (step, text = "", status = "") => {
+    // if the step is not started, start it
+    if (!is_started(step))
+        start_step(step)
     // Assigns the connector after the step the given text and status
     const index = states.indexOf(step)
     const connector_index = index * 2
@@ -60,18 +85,22 @@ const get_progress = async _ => {
 
 
 let poll = null
-export const poll_progress = (interval=200) => {
+export const poll_progress = (interval = 200) => {
+    let old_state = ""
     const polling_function = async _ => {
         try {
             // get current progress
             const re = await get_progress()
             console.log(re);
-            // apply progress
-
-            // quit if done (in theory go somewhere else, liek download page)
-            if (re.ready) {
+            // quit if done or sth
+            if (re.task_state && re.task_state == "done") {
+                console.log("clearend");
+                stop_step(old_state)
                 clearInterval(poll)
-              }
+            }
+            // apply progress
+            update_progress(re.state, re.state_text, re.state_status)
+            old_state = re.state
         } catch (e) {
             console.log(e);
             

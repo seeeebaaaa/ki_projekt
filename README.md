@@ -10,8 +10,6 @@ docker compose up --build -d
 ```
 Damit wird alles relevante geladen und gestartet. Anschließend ist die Seite über [http://localhost:8000](http://localhost:8000) erreichbar.
 
-Um die Logs (und eventuelle Probleme einzusehen, einfach `docker compose logs` nutzen, bzw. um die Logs von einem bestimmtem Container zu sehen den Namen (ast,web,js,css,...) anhängen. Z.B: `docker compose logs web`)
-
 # Dev-Installation
 Ansich kann auch direkt so damit gearbeitet werden, aber damit z.B. VS Code alle Pakete und Abhängigkeiten (Python/JS) finden kann, müssen diese mit [*uv*](https://github.com/astral-sh/uv?tab=readme-ov-file#installation) (Schnelleres **pip*) und [*yarn*](https://yarnpkg.com/getting-started/install) (Schnelleres *npm*) installiert werden.
 ## uv
@@ -39,3 +37,8 @@ yarn info # Zeigt Dependency Graphen für benötigte Projekte an
 yarn add jquer --modules-folder node_modules/ # = npm install jquery 
 yarn remove jquery --modules-folder node_modules/ # = npm uninstall jquery 
 ```
+
+## Additional Info
+
+Um die Logs (und eventuelle Probleme einzusehen, einfach `docker compose logs` nutzen, bzw. um die Logs von einem bestimmtem Container zu sehen den Namen (ast,web,js,css,...) anhängen. Z.B: `docker compose logs web`)
+Wenn Änderungen an `tasks.py`, oder Sachen die `task.py` u.ä. nutzt, gemacht wurden, dann muss es neu gebuilded/gestartet werden, da Celery sonst die Taskts nicht aktualisiert. (vmtl reichts den worker container neu zu starten/builden, aber idk)
