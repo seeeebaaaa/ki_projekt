@@ -86,6 +86,7 @@ const get_progress = async _ => {
 
 
 let poll = null
+// should use a websocket instead of this, but thats sth for the future
 export const poll_progress = (cb_loop,cb_end,interval = 200) => {
     let old_state = ""
     const polling_function = async _ => {

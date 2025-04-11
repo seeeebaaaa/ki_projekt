@@ -399,6 +399,9 @@ body {
   font-weight: bolder;
   text-align: center;
 }
+.main > .content > .selection > .container > .text {
+   text-align: center;
+}
 
 .main > .content > .selection > .container > button {
   background-color: var(--c-text);
@@ -416,6 +419,15 @@ body {
 .main > .content > .selection > .container > button:disabled {
   color: var(--c-bg-dark);
   background-color: var(--c-text-scnd);
+}
+
+.main > .content > .selection > .files-to-process > .list{
+  margin-top: 1em;
+  border: 1px solid black;
+  border-radius: var(--r-border);
+  background-color: var(--c-bg-dark);
+  max-height: 10em;
+  overflow: scroll;
 }
 
 .main > .content > .loading {

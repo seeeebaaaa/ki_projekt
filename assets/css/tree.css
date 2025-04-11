@@ -84,13 +84,18 @@
     cursor: pointer;
 }
 
+.tree .item .name {
+  flex-grow: 1;
+  flex-basis: 0;
+}
+
 .tree .item .symbol svg {
     height: 1.5em;
     max-width: 1em;
 }
 .tree .item .symbol svg * {
-  stroke: var(--c-text);
-  stroke-width: var(--w-symbol);
+    stroke: var(--c-text);
+    stroke-width: var(--w-symbol);
 }
 
 .tree .item .checkbox {
@@ -103,29 +108,35 @@
     align-items: center;
 }
 
-.tree .item .checkbox label {
+.tree .item .checkbox div {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.tree .item .checkbox label svg {
-  width: 1em;
-  height: 1em;
+.tree .item .checkbox div svg {
+    width: 1em;
+    height: 1em;
 }
 
-.tree .item .checkbox label svg * {
-  stroke: var(--c-text-scnd);
-  stroke-width: var(--w-symbol);
+.tree .item .checkbox div svg * {
+    stroke: var(--c-text-scnd);
+    stroke-width: var(--w-symbol);
 }
 
-.tree .item .checkbox label:hover svg * {
-  stroke: var(--c-text);
+.tree .item .checkbox div:hover svg * {
+    stroke: var(--c-text);
 }
 
-.tree .item .checkbox label:active svg * {
-  stroke: var(--c-text);
-  fill: var(--c-text);
+.tree .item .checkbox input:checked + div svg * {
+    stroke: var(--c-text);
+    fill: var(--c-text);
+}
+
+.tree .item .checkbox input:checked:indeterminate + div svg * {
+    stroke: var(--c-text-scnd);
+    stroke-dasharray: 4 1;
+    fill: var(--c-text-scnd);
 }
 
 .tree .item:hover {

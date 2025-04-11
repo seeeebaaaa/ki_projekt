@@ -35,7 +35,7 @@ class GitProgressCallback(pygit2.RemoteCallbacks):
 @shared_task(ignore_result=False)
 def start_clone_git(session_id):
     """Clone the given git into the data volume under the uid and provide file structure"""
-    save_progress(session_id,{"task_state":"started","state_text":"Cloning Repo.."})# git link
+    save_progress(session_id,{"task_state":"started","state_text":"Accessing Repo..","state_status":"0/???"})# git link
     git_link = get_progress(session_id)["git_link"]
     # user path
     user_path: Path = Path("/data") / session_id

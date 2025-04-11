@@ -36,7 +36,7 @@ const entry_start = async _ => {
         
     } else {
         // otherwise, start polling for progress updatess
-        poll_progress(git_clone_cb_loop,git_clone_cb_end,50)
+        poll_progress(git_clone_cb_loop,git_clone_cb_end,500)
     }
 }
 

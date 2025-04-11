@@ -162,10 +162,13 @@
                 <div class="symbol">{{ inline_svg('page-star.svg') }}</div>
                 <div class="container">
                     <div class="title">Select all the files or folders you want to generate documentation for</div>
-                    <div class="text">Click on the checkbox to select the relevant items.</div>
+                    <div class="text">Click on the checkbox to select the relevant items. Currently only python (*.py) files are processed.</div>
                     <button disabled>Process files</button>
                 </div>
-                <div class="fill"></div>
+                <div class="files-to-process">
+                    <div class="text">The following files will be processed:</div>
+                    <div class="list"></div>
+                </div>
             </div>
             <!-- from https://www.html-code-generator.com/css/loading-animation?type=circle&page=1#modal -->
             <div class="loading">
