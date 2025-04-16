@@ -5,6 +5,13 @@ import json
 
 r = Redis.from_url(url=REDIS_URL, decode_responses=True)
 
+# # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# TODO:                                               #
+# This is not good. Quite inefficient, getting all    #
+# thate on save and get, and just not nice.           #
+# Fix in future.                                      #
+#                                                     #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 def init_progress(uid):
     progress = {

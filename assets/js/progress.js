@@ -43,7 +43,7 @@ const is_started = step => {
 
 
 export const stop_step = step => {
-    // sets the ball and following connector to current
+    // sets the ball and following connector to done
     const index = states.indexOf(step)
     const ball_index = index * 2 + 1
     const connector_index = index * 2
@@ -125,6 +125,14 @@ export const git_clone_cb_end = (re,old_state) => {
     $(".main>.content>.selection").removeClass("hidden")
     // show select screen
 }
-// window.start_step = start_step
-// window.update_progress = update_progress
-$(_ => {})
+
+export const process_files_cb_loop = re => {
+    update_progress(re.state, re.state_text, re.state_status)
+}
+
+export const process_files_cb_end = (re,old_state) => {
+    stop_step(old_state)
+    // do sth
+    console.log("Done");
+    
+}

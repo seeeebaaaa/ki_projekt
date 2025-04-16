@@ -67,8 +67,13 @@ def start():
 def process():
     """Given a list of files/paths from the user repo, start the processing (parsing) and prompting process"""
     uid = session.get("_id")
+    # check if that user even is at the reviewing step
+    progress = get_progress(uid)
+    if progress.get("state")!="select":
+        return jsonify({"error": f"Not correct processing order ({progress.get("state")})"})
     data = request.json
     files = data.get("files")
+    # check if at least some of the selected files are valid.
     if not all(file.endswith(".py") for file in files) or len(files)==0:
         return jsonify({"error": "All files must have a .py extension"})
     print("files:",files)

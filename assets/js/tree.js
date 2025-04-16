@@ -1,4 +1,10 @@
 import $ from 'jquery'
+import {
+    poll_progress,
+    process_files_cb_loop,
+    process_files_cb_end,
+    stop_step
+} from './progress'
 
 async function buildTree (paths) {
     const root = {}
@@ -312,12 +318,19 @@ const start_file_processing = async _ => {
         // handle error from backend
         console.log(re.error)
     } else {
+        // close previous state
+      stop_step('select')
+      //  disable state button
+      $('.main > .content > .selection > .container > button').prop("disabled",true)
         // otherwise, start polling for progress updatess
-        // poll_progress(git_clone_cb_loop, git_clone_cb_end, 500)
+        poll_progress(process_files_cb_loop, process_files_cb_end, 100)
     }
 }
 
 // attach to button
 $(_ => {
-  $(".main > .content > .selection > .container > button").on("click",start_file_processing)
+    $('.main > .content > .selection > .container > button').on(
+        'click',
+        start_file_processing
+    )
 })

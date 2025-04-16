@@ -6,6 +6,7 @@ import pygit2
 from pathlib import Path
 import shutil
 from projekt_4.redis_helper import save_progress, get_progress
+from random import random
 
 flask_app = create_app()  # -Line 2
 celery_app = flask_app.extensions["celery"]  # -Line 3
@@ -69,14 +70,16 @@ def process_files(uid):
     info = get_progress(uid)
     files = info["files_to_process"]
     
+    # this checks, if the files are where they are supposed to be, so the user cant get access to files via ../../ etc
     base_path = Path("/data") / uid
     files = [str(base_path)+f for f in files]
     valid_files = [Path(f) for f in files if base_path in Path(f).resolve().parents and Path(f).exists()]
-    print("Vlaid,pahts:",valid_files)
+    print("Valid paths:",valid_files)
     print("All files:",files)
     if not valid_files:
         raise ValueError("No valid files to process.")
-
+    # update state progress to match everything
+    save_progress(uid,{"state":"ai","state_text":f"Parsing files.. ({len(valid_files)})","state_status":""})
     # Collects all paths and starts parsing group
     task_list = [ai_parse.s({"uid": uid, "file": str(file)}) for file in valid_files]
     return chord(task_list)(ai_prompt_group.s())
@@ -84,24 +87,40 @@ def process_files(uid):
 @shared_task(ignore_result=False)
 def ai_parse(args):
     """Parses the given file (path) and returns result"""
-    return {"uid": args["uid"], "file": args["file"]}
+    uid = args["uid"]
+    file = Path(args["file"])
+    sleep(random()*10)
+    # update client progress
+    save_progress(uid,{"state":"ai","state_status":f"Parsed {file.name}"})
+    return {"uid": uid, "file": str(file)}
 
 @shared_task(ignore_result=False)
 def ai_prompt_group(parsed_results):
     """Collects all parsing results and starts prompting group"""
+    uid = parsed_results[0]["uid"]
+    # update client progress
+    save_progress(uid,{"state":"ai","state_text":f"Prompting files.. ({len(parsed_results)})","state_status":""})
+    # kick of celery tasks
     task_list = [ai_prompt.s(result) for result in parsed_results]
     return chord(task_list)(collect_all_prompted.s())
 
 @shared_task(ignore_result=False)
-def ai_prompt(result):
+def ai_prompt(args):
     """Prompt AI for changes etc for one instance (this task is created for each change)"""
-    result["prompted"] = True
-    return result
+    uid = args["uid"]
+    file = Path(args["file"])
+    sleep(random()*10)
+    args["prompted"] = True
+    save_progress(uid,{"state":"ai","state_status":f"Prompted {file.name}"})
+    return args
 
 @shared_task(ignore_result=False)
 def collect_all_prompted(prompt_results):
     """Collects all prompted results to return in one object/push to db and change status so client can update progress steps."""
+    uid = prompt_results[0]["uid"]
     print("All prompts done:", prompt_results)
+    save_progress(uid,{"result":prompt_results,"state":"review","state_text":"","state_status":"","task_state":"done"})
+    current_task.update_state(state="SUCCESS")
     return prompt_results
 
 
