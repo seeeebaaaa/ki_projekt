@@ -1,6 +1,6 @@
 # from projekt_4.app import celery_app
 from projekt_4.config import create_app  # -Line 1
-from celery import shared_task, current_task
+from celery import shared_task, current_task, group, chord
 from time import sleep
 import pygit2
 from pathlib import Path
@@ -62,25 +62,58 @@ def select_switch_branch(session_id, branch_name):
     return {}
 
 
-@shared_task(ignore_result=False)
-def ai_parse(session_id):
-    """Parse selected files"""
-    return {}
-
 
 @shared_task(ignore_result=False)
-def ai_prompt(session_id):
+def process_files(uid):
+    """Processes all files (parse+prompt)"""
+    info = get_progress(uid)
+    files = info["files_to_process"]
+    
+    base_path = Path("/data") / uid
+    files = [str(base_path)+f for f in files]
+    valid_files = [Path(f) for f in files if base_path in Path(f).resolve().parents and Path(f).exists()]
+    print("Vlaid,pahts:",valid_files)
+    print("All files:",files)
+    if not valid_files:
+        raise ValueError("No valid files to process.")
+
+    task_list = [ai_parse.s({"uid": uid, "file": str(file)}) for file in valid_files]
+    return chord(task_list)(ai_prompt_group.s())
+
+@shared_task(ignore_result=False)
+def ai_parse(args):
+    return {"uid": args["uid"], "file": args["file"]}
+
+@shared_task(ignore_result=False)
+def ai_prompt_group(parsed_results):
+    print("CCC", parsed_results)
+    return group([ai_prompt.s(result) for result in parsed_results]) | collect_all_prompted.s()
+
+@shared_task(ignore_result=False)
+def ai_prompt(result):
+    # Dummy implementation
+    return f"Prompted for {result['file']}"
+
+@shared_task(ignore_result=False)
+def collect_all_prompted(prompt_results):
+    print("All prompts done:", prompt_results)
+    return prompt_results
+
+@shared_task(ignore_result=False)
+def ai_prompt(result):
     """Prompt AI for changes etc for one instance (this task is created for each change)"""
-    return {}
+    result["prompted"] = True
+    print("BBBB",result)
+    return result
 
 
 @shared_task(ignore_result=False)
-def review_apply_changes(session_id):
+def review_apply_changes(uid):
     """Apply the changes the reviewer made in a new branch of the local repo"""
     return {}
 
 
 @shared_task(ignore_result=False)
-def bundle_create_bundle(session_id):
+def bundle_create_bundle(uid):
     """Create a git bundle, so the changed repository can be imported as a new branch."""
     return {}

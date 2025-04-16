@@ -22,7 +22,7 @@ CELERY_CONFIG = {
     "broker_url": REDIS_URL,
     "result_backend": REDIS_URL,
     "include": [],
-    "task_ignore_result": True,
+    "task_ignore_result": False,
     "task_annotations": {
         'projekt_4.tasks.ai_parse': {'rate_limit': rate_limit}, 
         'projekt_4.tasks.ai_prompt': {'rate_limit': rate_limit},  

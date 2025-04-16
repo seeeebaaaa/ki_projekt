@@ -266,25 +266,58 @@ const get_list_of_selected_paths = _ => {
     return path_list
 }
 
-const toggle_process_button = _ => {
+const get_list_of_accepted_paths = _ => {
     const path_list = get_list_of_selected_paths()
+    return path_list.filter(path => path.endsWith('.py'))
+}
+
+const toggle_process_button = _ => {
     const button = $('.main>.content>.selection button')
 
     // remove all entries of list that don't end with .py
-    const filteredPaths = path_list.filter(path => path.endsWith('.py'))
-
+    const filteredPaths = get_list_of_accepted_paths()
     button.prop('disabled', filteredPaths.length == 0)
 
     if (filteredPaths.length != 0) {
         // display all files that will be processed
         const $list = $('.main>.content>.selection>.files-to-process>.list')
         const content = filteredPaths.join('<br>')
-      $list.html(content)
-      $('.main>.content>.selection>.files-to-process *').show()
-    } else 
-    $('.main>.content>.selection>.files-to-process *').hide()
+        $list.html(content)
+        $('.main>.content>.selection>.files-to-process *').show()
+    } else $('.main>.content>.selection>.files-to-process *').hide()
 }
 
 $(_ => {
-  $('.main>.content>.selection>.files-to-process *').hide()
+    $('.main>.content>.selection>.files-to-process *').hide()
+})
+
+// send request when process button is pressed
+
+const start_file_processing = async _ => {
+    // start process in backend
+    const valid_paths = get_list_of_accepted_paths()
+    const re = await (
+        await fetch(URLS.process(), {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                files: valid_paths
+            })
+        })
+    ).json()
+    if (re.error) {
+        // handle error from backend
+        console.log(re.error)
+    } else {
+        // otherwise, start polling for progress updatess
+        // poll_progress(git_clone_cb_loop, git_clone_cb_end, 500)
+    }
+}
+
+// attach to button
+$(_ => {
+  $(".main > .content > .selection > .container > button").on("click",start_file_processing)
 })

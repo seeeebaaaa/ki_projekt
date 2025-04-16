@@ -5,7 +5,7 @@ import uuid
 from functools import wraps
 from celery.result import AsyncResult
 import validators
-from projekt_4.tasks import flask_app as app, start_clone_git
+from projekt_4.tasks import flask_app as app, start_clone_git, process_files
 from projekt_4.redis_helper import get_progress, init_progress, save_progress
 
 
@@ -50,6 +50,7 @@ def home():
 @app.post("/start")
 @ensure_session
 def start():
+    """Start the session tasks, aswell as clone the repo from given link"""
     uid = session.get("_id")
     data = request.json
     git_link = data.get("git_link")
@@ -58,6 +59,21 @@ def start():
     init_progress(uid)
     save_progress(uid,{"git_link":git_link,"task_state":"pending"})
     result = start_clone_git.apply_async(args=[session.get("_id")])
+    save_progress(uid, {"current_task_id": result.id})
+    return jsonify({"success": "Task created"})
+
+@app.post("/process")
+@ensure_session
+def process():
+    """Given a list of files/paths from the user repo, start the processing (parsing) and prompting process"""
+    uid = session.get("_id")
+    data = request.json
+    files = data.get("files")
+    if not all(file.endswith(".py") for file in files) or len(files)==0:
+        return jsonify({"error": "All files must have a .py extension"})
+    print("files:",files)
+    save_progress(uid,{"files_to_process":files,"task_state":"pending"})
+    result = process_files.apply_async(args=[session.get("_id")])
     save_progress(uid, {"current_task_id": result.id})
     return jsonify({"success": "Task created"})
 
