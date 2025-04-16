@@ -65,7 +65,7 @@ def select_switch_branch(session_id, branch_name):
 
 @shared_task(ignore_result=False)
 def process_files(uid):
-    """Processes all files (parse+prompt)"""
+    """Acts as the starting point for parse&prompting tasks. Will filter out relevant paths and start everything"""
     info = get_progress(uid)
     files = info["files_to_process"]
     
@@ -77,34 +77,33 @@ def process_files(uid):
     if not valid_files:
         raise ValueError("No valid files to process.")
 
+    # Collects all paths and starts parsing group
     task_list = [ai_parse.s({"uid": uid, "file": str(file)}) for file in valid_files]
     return chord(task_list)(ai_prompt_group.s())
 
 @shared_task(ignore_result=False)
 def ai_parse(args):
+    """Parses the given file (path) and returns result"""
     return {"uid": args["uid"], "file": args["file"]}
 
 @shared_task(ignore_result=False)
 def ai_prompt_group(parsed_results):
-    print("CCC", parsed_results)
-    return group([ai_prompt.s(result) for result in parsed_results]) | collect_all_prompted.s()
-
-@shared_task(ignore_result=False)
-def ai_prompt(result):
-    # Dummy implementation
-    return f"Prompted for {result['file']}"
-
-@shared_task(ignore_result=False)
-def collect_all_prompted(prompt_results):
-    print("All prompts done:", prompt_results)
-    return prompt_results
+    """Collects all parsing results and starts prompting group"""
+    task_list = [ai_prompt.s(result) for result in parsed_results]
+    return chord(task_list)(collect_all_prompted.s())
 
 @shared_task(ignore_result=False)
 def ai_prompt(result):
     """Prompt AI for changes etc for one instance (this task is created for each change)"""
     result["prompted"] = True
-    print("BBBB",result)
     return result
+
+@shared_task(ignore_result=False)
+def collect_all_prompted(prompt_results):
+    """Collects all prompted results to return in one object/push to db and change status so client can update progress steps."""
+    print("All prompts done:", prompt_results)
+    return prompt_results
+
 
 
 @shared_task(ignore_result=False)
