@@ -145,3 +145,215 @@ class OllamaAPI(AIAPI):
         return response.message.content
 ```
 </details>
+
+# 21.04.25 Ollama Llama 3.3
+> uncommented file api_clients. Provided a JSON description for response format
+
+Previous tests with Llama 3.2 were not really successful. Though that was using a 3.2B model, while the default Llama3.3 is a 70B model.
+
+<details>
+<summary>response_format</summary>
+
+```python 
+response_format = {
+        "type": "object",
+        "properties": {
+            "comments": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "type": {
+                            "type": "string",
+                            "description": "The type of the described code block (e.g., class, function, variable, etc.)."
+                        },
+                        "name": {
+                            "type": "string",
+                            "description": "The name of the code object (e.g., function or class name)."
+                        },
+                        "documentation": {
+                            "type": "string",
+                            "description": "The generated documentation for the code object."
+                        }
+                    },
+                    "required": ["type", "name", "documentation"]
+                }
+            }
+        },
+        "required": ["comments"]
+    }
+```
+</details>
+<details>
+<summary>JSON response</summary>
+
+```python
+{
+  "comments": [
+    {
+      "type": "module",
+      "name": "AI API communication module",
+      "documentation": "# Module for communicating with AI APIs. It provides a base interface and two implementations: Google GenAI and OllamaAPI."
+    },
+    {
+      "type": "class",
+      "name": "AIAPI",
+      "documentation": "# Base interface for AI API communication.\n# Abstract class that defines the methods to be implemented by its subclasses."
+    },
+    {
+      "type": "method",
+      "name": "__init__",
+      "documentation": "# Initializes the AIAPI object. It sets up the client and model attributes, but does not assign any values to them."
+    },
+    {
+      "type": "method",
+      "name": "simple_prompt",
+      "documentation": "# Generates text based on the given prompt.\n# Abstract method that must be implemented by subclasses."
+    },
+    {
+      "type": "method",
+      "name": "generate_docs",
+      "documentation": "# Generates documentation based on the given code.\n# Abstract method that must be implemented by subclasses."
+    },
+    {
+      "type": "class",
+      "name": "GoogleGenAI",
+      "documentation": "# Google GenAI implementation of the AIAPI interface."
+    },
+    {
+      "type": "method",
+      "name": "__init__",
+      "documentation": "# Initializes the GoogleGenAI object. It sets up the client and model attributes using the Google API key and 'gemini-2.0-flash' model, respectively."
+    },
+    {
+      "type": "method",
+      "name": "simple_prompt",
+      "documentation": "# Generates text based on the given prompt using the Google GenAI API.\n# Returns the generated text as a string."
+    },
+    {
+      "type": "method",
+      "name": "generate_docs",
+      "documentation": "# Generates documentation based on the given code using the Google GenAI API.\n# Returns the generated documentation as a string."
+    },
+    {
+      "type": "class",
+      "name": "OllamaAPI",
+      "documentation": "# Ollama implementation of the AIAPI interface."
+    },
+    {
+      "type": "method",
+      "name": "__init__",
+      "documentation": "# Initializes the OllamaAPI object. It sets up the client and model attributes using the 'https://im-kigs.oth-regensburg.de/openwebui/ollama/' server URL and 'llama3.3' model, respectively."
+    },
+    {
+      "type": "method",
+      "name": "simple_prompt",
+      "documentation": "# Generates text based on the given prompt using the Ollama API.\n# Returns the generated text as a string."
+    },
+    {
+      "type": "method",
+      "name": "generate_docs",
+      "documentation": "# Generates documentation based on the given code using the Ollama API.\n# Returns the generated documentation in JSON format, with comments for each described code block."
+    }
+  ]
+}
+```
+</details>
+
+# 21.04.25 Ollama Deepseek-R1:70b
+> uncommented file api_clients. Provided a JSON description for response format
+
+<details>
+<summary>response_format</summary>
+
+```python 
+response_format = {
+        "type": "object",
+        "properties": {
+            "comments": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "type": {
+                            "type": "string",
+                            "description": "The type of the described code block (e.g., class, function, variable, etc.)."
+                        },
+                        "name": {
+                            "type": "string",
+                            "description": "The name of the code object (e.g., function or class name)."
+                        },
+                        "documentation": {
+                            "type": "string",
+                            "description": "The generated documentation for the code object."
+                        }
+                    },
+                    "required": ["type", "name", "documentation"]
+                }
+            }
+        },
+        "required": ["comments"]
+    }
+```
+</details>
+
+<details>
+<summary>JSON response</summary>
+
+```python
+{
+    "comments": [
+        {
+            "type": "module",
+            "name": "",
+            "documentation": "This module provides an interface to interact with different AI APIs for generating documentation.",
+        },
+        {
+            "type": "class",
+            "name": "AIAPI",
+            "documentation": "Abstract base class providing the interface for AI API communication. It defines methods that must be implemented by subclasses: simple_prompt and generate_docs.",
+        },
+        {
+            "type": "method",
+            "name": "simple_prompt",
+            "documentation": "Generates text based on a given prompt. This method is abstract and should be implemented by each subclass to handle the specifics of their respective AI API.",
+        },
+        {
+            "type": "method",
+            "name": "generate_docs",
+            "documentation": "Generates technical documentation for the provided code input. This method is abstract and must be implemented by subclasses according to the specific requirements of each AI service.",
+        },
+        {
+            "type": "class",
+            "name": "GoogleGenAI",
+            "documentation": "Implementation of AIAPI using Google GenAI. Configures a client with the Gemini model and implements methods for generating text and documentation.",
+        },
+        {
+            "type": "method",
+            "name": "simple_prompt",
+            "documentation": "Sends a prompt to the Google GenAI API and returns the generated response.",
+        },
+        {
+            "type": "method",
+            "name": "generate_docs",
+            "documentation": "Generates code comments for the provided input_code using the Gemini model. It constructs appropriate system and user instructions and processes the response accordingly.",
+        },
+        {
+            "type": "class",
+            "name": "OllamaAPI",
+            "documentation": "Implementation of AIAPI using Ollama. Configures a client to communicate with an external Ollama server and implements methods for generating text and documentation in a specific JSON format.",
+        },
+        {
+            "type": "method",
+            "name": "simple_prompt",
+            "documentation": "Sends a prompt to the Ollama API and returns the generated response.",
+        },
+        {
+            "type": "method",
+            "name": "generate_docs",
+            "documentation": "Generates code comments for the provided input_code using the Ollama service. It constructs system instructions, sends the request, and parses the JSON-formatted response containing the documentation.",
+        },
+    ]
+}
+```
+</details>
