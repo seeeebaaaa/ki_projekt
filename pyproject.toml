@@ -20,4 +20,5 @@ dependencies = [
   "pygit2>=1.17.0",
   "ollama>=0.4.7",
   "google-genai>=1.10.0",
+  "pydantic>=2.11.2",
 ]
