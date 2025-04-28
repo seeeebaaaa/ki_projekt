@@ -133,6 +133,9 @@ export const process_files_cb_loop = re => {
 export const process_files_cb_end = (re,old_state) => {
     stop_step(old_state)
     // do sth
+    // hide loading screen
+    $(".main>.content>.loading").hide()
+    $(".main>.content>.review").removeClass("hidden")
     console.log("Done");
     
 }

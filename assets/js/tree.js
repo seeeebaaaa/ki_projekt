@@ -321,7 +321,9 @@ const start_file_processing = async _ => {
         // close previous state
       stop_step('select')
       //  disable state button
-      $('.main > .content > .selection > .container > button').prop("disabled",true)
+      $('.main > .content > .selection > .container > button').prop("disabled", true)
+      $(".main>.content>.loading").show()
+      $(".main>.content>.selection").hide()
         // otherwise, start polling for progress updatess
         poll_progress(process_files_cb_loop, process_files_cb_end, 100)
     }
