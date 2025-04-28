@@ -116,11 +116,11 @@ services:
     <<: *default-assets
     command: "../bin/run yarn:build:css"
 
-  ast:
+  parser:
     <<: *default-app
     build:
-      context: "ast/"
-      target: "ast"
+      context: "parser/"
+      target: "parser"
     tty: true
     entrypoint: []
     # expose a port to the docker network (ports binds them to host)
@@ -130,7 +130,7 @@ services:
       timeout: "3s"
       start_period: "5s"
       retries: 3
-    profiles: ["ast"]
+    profiles: ["parser"]
 
 volumes:
   redis: {}
