@@ -20,7 +20,7 @@ class CommentList(BaseModel):
 
 
 # Base interface for AI API communication
-class AIAPI(ABC):
+class AI_API(ABC):
     system_instruction = """You are a code documentation engine. Users will provide you with code snippets and you will generate technical documentation describing what the code does.
                             Please provide the documentation in the form of code comments that can be inserted into the code.
                             If the snippet already has documentation, check if it correctly describes the code. If so, do NOT generate new documentation.
@@ -37,10 +37,10 @@ class AIAPI(ABC):
 
                         """
     
-    class Model(str, Enum):
+    class Models(str, Enum):
         pass
 
-    def __init__(self, model: Model):
+    def __init__(self, model: Models):
         self.client
         self.model
 
@@ -56,9 +56,9 @@ class AIAPI(ABC):
 
 
 # Google GenAI implementation
-class GoogleGenAI(AIAPI):
+class GoogleGenAI_API(AI_API):
 
-    class Models(AIAPI.Model):
+    class Models(AI_API.Models):
         GEMINI_2x0_FLASH = "gemini-2.0-flash"
         GEMINI_2x0 = "gemini-2.0"
         GEMINI_1x5 = "gemini-1.5"
@@ -96,9 +96,9 @@ class GoogleGenAI(AIAPI):
 
 
 # Ollama implementation
-class OllamaAPI(AIAPI):
+class Ollama_API(AI_API):
 
-    class Models(AIAPI.Model):
+    class Models(AI_API.Models):
         CODELLAMA_70B = "codellama:70b"
         CODELLAMA_7B_INSTRUCT = "codellama:7b-instruct"
         DEEPSSEKR1_14B = "deepseek-r1:14b"

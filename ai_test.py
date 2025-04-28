@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-from projekt_4.api_clients import GoogleGenAI, OllamaAPI
+from projekt_4.api_clients import GoogleGenAI_API, Ollama_API
 from parser.parse_file import python_parse_file
 
 code = None
@@ -13,8 +13,8 @@ ast_code = python_parse_file(file_path)
 # Example usage
 if __name__ == "__main__":
     load_dotenv()
-    gemini = GoogleGenAI(GoogleGenAI.Models.GEMINI_2x0_FLASH)
-    ollama = OllamaAPI(OllamaAPI.Models.DEEPSSEKR1_70B)
+    gemini = GoogleGenAI_API(GoogleGenAI_API.Models.GEMINI_2x0_FLASH)
+    ollama = Ollama_API(Ollama_API.Models.DEEPSSEKR1_70B)
     # print(ai_api.simple_prompt("what is the capital of denmark?"))
     # docu_ollama = ollama.generate_docs(code)
 
