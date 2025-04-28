@@ -2,4 +2,14 @@
     flex-grow: 2;
     background-color: rgb(79, 102, 77);
     min-height: 0;
-  }
+    display: flex;
+    flex-direction: column;
+}
+
+.main > .content > .editor > .top {
+    max-height: 5em;
+}
+
+.main > .content > .editor > div {
+    flex-grow: 1;
+}

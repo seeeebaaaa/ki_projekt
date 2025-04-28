@@ -49,8 +49,9 @@ export const on_file_click = async el => {
     )
     // attach to parent/clear others
     const $parent = $('.main>.content>.editor')
-    $parent.empty()
-    $parent.append(ev.dom)
+    const $container = $parent.find(">.container")
+    $container.empty()
+    $container.append(ev.dom)
     // see if review panel is still visible
     const $reviewPanel = $('.main > .content > .review')
     if ($reviewPanel.is(':visible'))

@@ -7,7 +7,7 @@ from celery.result import AsyncResult
 import validators
 from projekt_4.tasks import flask_app as app, start_clone_git, process_files
 from projekt_4.redis_helper import get_progress, init_progress, save_progress
-
+from pathlib import Path
 
 # svg helper to render them inline
 # Assuming SVGs are in 'static/svg/'
@@ -98,14 +98,16 @@ def progress() -> dict[str, object]:
 @ensure_session
 def changes()->dict[str,object]:
     uid = session.get("_id")
-    path = request.json.get("path")
+    path:str = request.json.get("path")
     data = get_progress(uid)
     if "result" in data:
         if not any(item.get("file") == path for item in data["result"]):
             return jsonify({"error": "No file with the specified path found"})
         file_data = next(item for item in data["result"] if item.get("file") == path)
+        base_path = Path(f"/data/{uid}/")
+        file_content = (base_path / path).read_text()
         return jsonify({
             "changes": file_data.get("prompt_result_file"),
-            "original": file_data.get("original_content", "No original content available")
+            "original": file_content
         })
     return jsonify({"error": "No changes available"})
