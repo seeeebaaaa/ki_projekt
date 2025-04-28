@@ -9,6 +9,7 @@ cd ki_projekt/
 docker compose up --build -d
 ```
 Damit wird alles relevante geladen und gestartet. Anschließend ist die Seite über [http://localhost:8000](http://localhost:8000) erreichbar.
+Manchmal ist es trotzdem nötig die NPM/Yarn Dependencies schon selber zu installieren. Dafür einfach unter [#yarn](#yarn) lesen.
 
 # Dev-Installation
 Ansich kann auch direkt so damit gearbeitet werden, aber damit z.B. VS Code alle Pakete und Abhängigkeiten (Python/JS) finden kann, müssen diese mit [*uv*](https://github.com/astral-sh/uv?tab=readme-ov-file#installation) (Schnelleres **pip*) und [*yarn*](https://yarnpkg.com/getting-started/install) (Schnelleres *npm*) installiert werden.
