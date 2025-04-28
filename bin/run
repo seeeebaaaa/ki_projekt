@@ -99,7 +99,7 @@ yarn:build:css() {
   #   cp css/* ../public/css/
   # fi
   mkdir -p ../public/css
-  cp css/* ../public/css/
+  cp -r css/* ../public/css/
   node css-watch.mjs
 }
 

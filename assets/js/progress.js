@@ -22,13 +22,13 @@ export const start_step = step => {
     const previous_connector = $(`.p-bar-container .connector:nth-child(${connector_index})`)
     if (previous_connector.length) {
         previous_connector.find('.text span').text('')
-        previous_connector.find('.status').text('')
+        previous_connector.find('.status span').text('')
         previous_connector.removeClass('current').addClass('done')
     }
     const next_connector = $(`.p-bar-container .connector:nth-child(${connector_index+2})`)
     if (next_connector.length) {
         next_connector.find('.text span').text('')
-        next_connector.find('.status').text('')
+        next_connector.find('.status span').text('')
         next_connector.removeClass('done').addClass('current')
     }
     ball.removeClass('done').addClass('current')
@@ -51,7 +51,7 @@ export const stop_step = step => {
     const next_connector = $(`.p-bar-container .connector:nth-child(${connector_index+2})`)
     if (next_connector.length) {
         next_connector.find('.text span').text('')
-        next_connector.find('.status').text('')
+        next_connector.find('.status span').text('')
         next_connector.removeClass('current').addClass('done')
     }
     ball.removeClass('current').addClass('done')
@@ -69,7 +69,7 @@ export const update_progress = (step, text = "", status = "") => {
         if (text)
             next_connector.find('.text span').text(text)
         if (status)
-            next_connector.find('.status').text(status)
+            next_connector.find('.status span').text(status)
     }
 }
 
@@ -137,5 +137,7 @@ export const process_files_cb_end = (re,old_state) => {
     $(".main>.content>.loading").hide()
     $(".main>.content>.review").removeClass("hidden")
     console.log("Done");
-    
+    // rebuild the tree to the given files
+    let files = re.result.map((el, _) => el.file)
+    load_tree(files,true)
 }

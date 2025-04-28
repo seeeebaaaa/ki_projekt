@@ -9,6 +9,7 @@
 @import url("content/selection.css");
 @import url("content/loading.css");
 @import url("content/editor.css");
+@import url("content/review.css");
 /*\
  * Declare site varaibles
 \*/
@@ -89,9 +90,8 @@ body {
   flex-direction: column;
   position: relative;
   min-height: 100vh;
-  width: 100vw;
-  max-width: 100vw;
-  overflow-x: hidden;
+  max-width: 100%;
+  /* overflow-x: hidden; */
 }
 
 /*\
@@ -107,6 +107,7 @@ body {
     /* substract height of nav bar to ensure correct height */
     height: calc(100vh - 3em); 
     width: 100vw;
+    max-width: 100%;
     position: relative;
 }
 
@@ -115,7 +116,7 @@ body {
 \*/
 .main>.bar {
   min-height: 5.6em;
-  width: 100vw;
+  width: 100%;
   /* position: sticky;
   top: 3em; */
   display: flex;

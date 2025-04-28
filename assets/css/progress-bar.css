@@ -106,7 +106,21 @@
     padding-bottom: 0.5em;
 }
 
-.p-bar-container > .connector > .status {
+/* .p-bar-container > .connector > .status {
     color: var(--c-bg-down);
     font-size: 0.7em;
+    text-align: center;
+} */
+
+.p-bar-container > .connector > .status {
+    display: flex;
+    align-items: start;
+    justify-content: center;
+}
+
+.p-bar-container > .connector > .status > span {
+    color: var(--c-bg-main);
+    font-size: 0.7em;
+    text-align: center;
+    padding-top: 0.5em;
 }

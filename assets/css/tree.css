@@ -124,16 +124,16 @@
     stroke-width: var(--w-symbol);
 }
 
-.tree .item .checkbox div:hover svg * {
+.tree .item .star.checkbox div:hover svg * {
     stroke: var(--c-text);
 }
 
-.tree .item .checkbox input:checked + div svg * {
+.tree .item .star.checkbox input:checked + div svg * {
     stroke: var(--c-text);
     fill: var(--c-text);
 }
 
-.tree .item .checkbox input:checked:indeterminate + div svg * {
+.tree .item .star.checkbox input:checked:indeterminate + div svg * {
     stroke: var(--c-text-scnd);
     stroke-dasharray: 4 1;
     fill: var(--c-text-scnd);
@@ -143,3 +143,24 @@
     background-color: rgba(8, 5, 52, 0.493);
     border-radius: var(--r-border);
 }
+
+
+/* attention/check boxes */
+.tree .item .highlight.checkbox div svg * {
+  stroke: var(--c-text);
+  stroke-width: var(--w-symbol);
+}
+
+.tree .item .highlight.checkbox div.attention svg * {
+  fill: var(--c-text);
+}
+
+.tree .item .highlight.checkbox input:checked:not(:indeterminate) ~ div.attention {
+  display: none;
+}
+
+.tree .item .highlight.checkbox input:not(:checked) ~ div.check ,
+.tree .item .highlight.checkbox input:checked:indeterminate ~ div.check {
+  display: none;
+}
+

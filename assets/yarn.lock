@@ -94,6 +94,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@codemirror/merge@npm:^6.10.0":
+  version: 6.10.0
+  resolution: "@codemirror/merge@npm:6.10.0"
+  dependencies:
+    "@codemirror/language": "npm:^6.0.0"
+    "@codemirror/state": "npm:^6.0.0"
+    "@codemirror/view": "npm:^6.17.0"
+    "@lezer/highlight": "npm:^1.0.0"
+    style-mod: "npm:^4.1.0"
+  checksum: 10c0/ead74d09602eb26512dd36a67c12bbcf36bf92945a6cfbf0fba9a57291f998e6ed1d98bae82a635ce364bf24c85a87b5b7b1e2930940918030a3f4bfb4b92452
+  languageName: node
+  linkType: hard
+
 "@codemirror/rangeset@npm:^0.19.0, @codemirror/rangeset@npm:^0.19.5":
   version: 0.19.9
   resolution: "@codemirror/rangeset@npm:0.19.9"
@@ -762,6 +775,7 @@ __metadata:
   dependencies:
     "@codemirror/highlight": "npm:^0.19.8"
     "@codemirror/lang-python": "npm:^6.1.7"
+    "@codemirror/merge": "npm:^6.10.0"
     "@codemirror/theme-one-dark": "npm:^6.1.2"
     "@fsegurai/codemirror-theme-vscode-dark": "npm:^6.1.2"
     chokidar: "npm:^4.0.3"

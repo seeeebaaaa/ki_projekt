@@ -53,6 +53,9 @@ def start_clone_git(session_id):
     # get files for frontend
     files = [str(p)[len("/data/"+session_id+"/"):] for p in user_path.glob("**/**")]
     files.remove("") # remove base path
+    # Remove every path that is /.git/*
+    files = [f for f in files if not f.startswith(".git/") and "/.git/" not in f and f!=".git"]
+    print(files)
     save_progress(session_id,{"data":{"branches":remote_branches,"files":files},"state":"select","state_text":"","state_status":"","task_state":"done"})
     current_task.update_state(state="SUCCESS")
 
@@ -89,7 +92,7 @@ def ai_parse(args):
     """Parses the given file (path) and returns result"""
     uid = args["uid"]
     file = Path(args["file"])
-    sleep(random()*10)
+    sleep(random()*3)
     # update client progress
     save_progress(uid,{"state":"ai","state_status":f"Parsed {file.name}"})
     return {"uid": uid, "file": str(file)}
@@ -109,8 +112,9 @@ def ai_prompt(args):
     """Prompt AI for changes etc for one instance (this task is created for each change)"""
     uid = args["uid"]
     file = Path(args["file"])
-    sleep(random()*10)
+    sleep(random()*3)
     args["prompted"] = True
+    args["prompt_result_file"] = "blab\nlabl\nabla" # the file contents after prompt, without direct file change, but still full file content
     save_progress(uid,{"state":"ai","state_status":f"Prompted {file.name}"})
     return args
 
@@ -119,6 +123,12 @@ def collect_all_prompted(prompt_results):
     """Collects all prompted results to return in one object/push to db and change status so client can update progress steps."""
     uid = prompt_results[0]["uid"]
     print("All prompts done:", prompt_results)
+    # remove all /data/<uid>/ prefixes from files:
+    base_path = f"/data/{uid}/"
+    for result in prompt_results:
+        if result["file"].startswith(base_path):
+            result["file"] = result["file"][len(base_path):]
+
     save_progress(uid,{"result":prompt_results,"state":"review","state_text":"","state_status":"","task_state":"done"})
     current_task.update_state(state="SUCCESS")
     return prompt_results

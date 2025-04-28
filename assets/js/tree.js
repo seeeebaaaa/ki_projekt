@@ -6,7 +6,9 @@ import {
     stop_step
 } from './progress'
 
-async function buildTree (paths) {
+import {on_file_click} from "./review"
+
+async function buildTree (paths, review = false) {
     const root = {}
 
     // Step 1: Build nested object structure
@@ -27,7 +29,9 @@ async function buildTree (paths) {
         for (const key in tree) {
             if (tree[key] === null) {
                 // key is a file, so add leaf to root
-                const $checkbox = await buildCheckbox(path_til_now, key)
+                const $checker = review
+                    ? await buildHighlgiht(path_til_now, key)
+                    : await buildCheckbox(path_til_now, key)
                 $root.append(
                     $('<div></div>')
                         .addClass('leaf item')
@@ -38,15 +42,15 @@ async function buildTree (paths) {
                             $('<div></div>')
                                 .addClass('symbol')
                                 .html(await getSVG('page.svg'))
-                                .on('click', open_file)
+                                .on('click', on_file_click)
                         )
                         .append(
                             $('<div></div>')
                                 .addClass('name')
                                 .text(key)
-                                .on('click', open_file)
+                                .on('click', on_file_click)
                         )
-                        .append($checkbox)
+                        .append($checker)
                 )
             } else {
                 // key is a folder, so start new section adn append that to the root
@@ -73,14 +77,16 @@ async function buildTree (paths) {
                             .text(key)
                             .on('click', unfold_section)
                     )
-                const $checkbox = await buildCheckbox(path_til_now, key)
+                const $checker = review
+                    ? await buildHighlgiht(path_til_now, key)
+                    : await buildCheckbox(path_til_now, key)
                 const $group = $('<div></div>')
                     .addClass('group')
                     .append('<div class="line"><div></div></div>')
                 const $items = $('<div></div>').addClass('items')
 
                 $section.append($head)
-                $head.append($checkbox)
+                $head.append($checker)
                 $group.append($items)
                 $section.append($group)
                 await cT(tree[key], $items, path_til_now + '/' + key)
@@ -95,7 +101,7 @@ async function buildTree (paths) {
 
 const buildCheckbox = async _ => {
     const $checkbox = $('<div></div>')
-        .addClass('checkbox')
+        .addClass('star checkbox')
         .append(
             $(`<input type="checkbox" name=""></input>`)
                 .hide()
@@ -110,6 +116,32 @@ const buildCheckbox = async _ => {
     return $checkbox
 }
 
+// the highlight for the reviewing process.
+// can be Attention or Done
+const buildHighlgiht = async _ => {
+    const $hightlight = $('<div></div>')
+        .addClass('highlight checkbox')
+        .append(
+            $(`<input type="checkbox" name=""></input>`)
+                .hide()
+                .on('prop_change_up', prop_change_up)
+                .on('prop_change_down', prop_change_down)
+        )
+        .append(
+            $(`<div></div>`)
+                .addClass('check')
+                .html(await getSVG('check.svg'))
+                .on('simulate_click', check_item)
+        )
+        .append(
+            $(`<div></div>`)
+                .addClass('attention')
+                .html(await getSVG('sparks-solid.svg'))
+                .on('simulate_click', check_item)
+        )
+    return $hightlight
+}
+
 const stored_images = {}
 
 async function getSVG (svgName) {
@@ -122,8 +154,8 @@ async function getSVG (svgName) {
     return text
 }
 
-export async function load_tree (paths) {
-    const tree = await buildTree(paths)
+export async function load_tree (paths, review = false) {
+    const tree = await buildTree(paths, review)
     $('.main>.content>.files>.none').hide()
     $('.main>.content>.files>.tree').remove()
     $('.main>.content>.files').append(tree)
@@ -138,10 +170,10 @@ const unfold_section = e => {
     head_item.siblings().toggleClass('open')
 }
 
-const open_file = e => {
-    const item = $(e.currentTarget).closest('.leaf.item')
-    console.log(`Request file from server.. (${item.attr('path')})`)
-}
+// const open_file = e => {
+//     const item = $(e.currentTarget).closest('.leaf.item')
+//     console.log(`Request file from server.. (${item.attr('path')})`)
+// }
 
 const check_item = e => {
     const item_checkbox = $(e.currentTarget).siblings()
@@ -319,11 +351,14 @@ const start_file_processing = async _ => {
         console.log(re.error)
     } else {
         // close previous state
-      stop_step('select')
-      //  disable state button
-      $('.main > .content > .selection > .container > button').prop("disabled", true)
-      $(".main>.content>.loading").show()
-      $(".main>.content>.selection").hide()
+        stop_step('select')
+        //  disable state button
+        $('.main > .content > .selection > .container > button').prop(
+            'disabled',
+            true
+        )
+        $('.main>.content>.loading').show()
+        $('.main>.content>.selection').hide()
         // otherwise, start polling for progress updatess
         poll_progress(process_files_cb_loop, process_files_cb_end, 100)
     }

@@ -17,7 +17,7 @@ SERVER_NAME = os.getenv(
 REDIS_URL = os.getenv("REDIS_URL", "redis://redis:6379/0")
 
 # Celery.
-rate_limit = "2/s"
+rate_limit = "20/s"
 CELERY_CONFIG = {
     "broker_url": REDIS_URL,
     "result_backend": REDIS_URL,

@@ -93,3 +93,19 @@ def progress() -> dict[str, object]:
         return jsonify({"error": "No Running Tasks!"})
     # TODO: DONT just send out data, for now its okay, but change later pls
     return jsonify(data)
+
+@app.post("/changes")
+@ensure_session
+def changes()->dict[str,object]:
+    uid = session.get("_id")
+    path = request.json.get("path")
+    data = get_progress(uid)
+    if "result" in data:
+        if not any(item.get("file") == path for item in data["result"]):
+            return jsonify({"error": "No file with the specified path found"})
+        file_data = next(item for item in data["result"] if item.get("file") == path)
+        return jsonify({
+            "changes": file_data.get("prompt_result_file"),
+            "original": file_data.get("original_content", "No original content available")
+        })
+    return jsonify({"error": "No changes available"})

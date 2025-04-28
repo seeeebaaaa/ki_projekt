@@ -5,6 +5,7 @@
 .nav {
     height: 3em;
     width: 100vw;
+    max-width: 100%;
     position: sticky;
     top: 0;
     display: flex;

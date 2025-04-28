@@ -1,0 +1,48 @@
+.main > .content > .review {
+    flex-grow: 2;
+    background-color: var(--c-bg-down);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.main > .content > .review > div {
+    flex-grow: 2;
+    flex-basis: 0;
+}
+
+.main > .content > .review > .symbol {
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    align-items: center;
+}
+
+.main > .content > .review > .symbol > svg {
+    width: 7em;
+    height: 7em;
+}
+
+.main > .content > .review > .symbol > svg * {
+    stroke: var(--c-text);
+    stroke-width: var(--w-symbol);
+}
+
+.main > .content > .review > .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1em;
+    max-width: 30em;
+}
+
+.main > .content > .review > .container > .title {
+    font-size: 1.5em;
+    font-weight: bolder;
+    text-align: center;
+}
+.main > .content > .review > .container > .text {
+    text-align: center;
+}

@@ -25,6 +25,7 @@
             'progress': _ => SCRIPT_ROOT + '/progress',
             'start': _=> SCRIPT_ROOT + "/start",
             'process': _=> SCRIPT_ROOT + "/process",
+            'get_changes': _=>SCRIPT_ROOT + "/changes"
         };
     </script>
     <!-- <script src="https://code.jquery.com/jquery-3.7.1.min.js"
@@ -78,7 +79,7 @@
                             <span></span>
                     </div>
                     <div class="line"></div>
-                    <div class="status"></div>
+                    <div class="status"><span></span></div>
                 </div>
                 <div class="step">
                     <div class="ball">{{ inline_svg('page-star.svg') }}</div>
@@ -89,7 +90,7 @@
                             <span></span>
                     </div>
                     <div class="line"></div>
-                    <div class="status"></div>
+                    <div class="status"><span></span></div>
                 </div>
                 <div class="step">
                     <div class="ball">{{ inline_svg('magic-wand.svg') }}</div>
@@ -100,7 +101,7 @@
                             <span></span>
                     </div>
                     <div class="line"></div>
-                    <div class="status"></div>
+                    <div class="status"><span></span></div>
                 </div>
                 <div class="step">
                     <div class="ball">{{ inline_svg('brain-research.svg') }}</div>
@@ -111,7 +112,7 @@
                             <span></span>
                     </div>
                     <div class="line"></div>
-                    <div class="status"></div>
+                    <div class="status"><span></span></div>
                 </div>
                 <div class="step">
                     <div class="ball">{{ inline_svg('shopping-bag.svg') }}</div>
@@ -122,7 +123,7 @@
                             <span></span>
                     </div>
                     <div class="line"></div>
-                    <div class="status"></div>
+                    <div class="status"><span></span></div>
                 </div>
                 <div class="step">
                     <div class="ball">{{ inline_svg('html5.svg') }}</div>
@@ -133,7 +134,7 @@
                             <span></span>
                     </div>
                     <div class="line"></div>
-                    <div class="status"></div>
+                    <div class="status"><span></span></div>
                 </div>
                 <div class="step">
                     <div class="ball">{{ inline_svg('download.svg') }}</div>
@@ -177,6 +178,7 @@
                     <div class="title">Review all changes the AI made</div>
                     <div class="text">Go through all the highlighted files to approve, deny or edit the proposed changes.</div>
                 </div>
+                <div class="filler"></div>
             </div>
             <!-- from https://www.html-code-generator.com/css/loading-animation?type=circle&page=1#modal -->
             <div class="loading">
@@ -198,7 +200,7 @@
         </div>
         <div class="input-container">
             <div class="input">
-                <input type="text" name="entry_input" id="entry_input" placeholder="Enter URL to a git repo"/>
+                <input type="text" name="entry_input" id="entry_input" placeholder="Enter URL to a git repo" value="https://github.com/seeeebaaaa/polycoid.gi"/>
             </div>
             <button type="button" disabled>Start</button>
         </div>
