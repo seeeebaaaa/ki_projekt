@@ -1,0 +1,5 @@
+.main > .content > .editor {
+    flex-grow: 2;
+    background-color: rgb(79, 102, 77);
+    min-height: 0;
+  }

@@ -1,0 +1,14 @@
+.main > .content > .loading {
+    flex-grow: 2;
+    background-color: var(--c-bg-down);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.main > .content > .loading > span {
+    font-size: 1.5em;
+    font-weight: bolder;
+    padding-top: 1em;
+}

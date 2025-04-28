@@ -1,0 +1,86 @@
+/*\
+ * CSS for the navigation bar
+\*/
+
+.nav {
+    height: 3em;
+    width: 100vw;
+    position: sticky;
+    top: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0em 1em;
+    z-index: 2;
+    background-color: var(--c-bg-main);
+}
+
+.nav > div {
+    flex-grow: 1;
+    flex-basis: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav > .left {
+    justify-content: start;
+}
+
+.nav > .left > .logo {
+    font-size: 1.5em;
+    font-weight: 600;
+    color: var(--c-text);
+    text-decoration: none;
+}
+
+.nav > .center > .git-link {
+    flex-grow: 1;
+    flex-basis: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav > .center > .git-link > .input {
+    min-width: 15em;
+    padding: 0.1em 0.5em;
+    color: var(--c-text-scnd);
+    border: 1px solid black;
+    border-radius: var(--r-border);
+    background-color: var(--c-bg-dark);
+    max-width: 25em;
+    overflow: scroll;
+    /* text-overflow: ellipsis; */
+    white-space: nowrap;
+    scrollbar-width: none;
+    text-align: center;
+}
+.nav > .center > .git-link > .input::-webkit-scrollbar {
+    display: none; /* Safari and Chrome */
+}
+
+.nav > .center > .git-link > .switch {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 1em;
+}
+
+.nav > .center > .git-link > .switch > svg {
+    width: 1em;
+    height: 1em;
+}
+
+.nav > .center > .git-link > .switch > svg * {
+    stroke-width: var(--w-symbol);
+    stroke: var(--c-text-scnd);
+}
+
+.nav > .center > .git-link > .switch:hover > svg * {
+    stroke: var(--c-text);
+}
+
+.nav > .right {
+    justify-content: end;
+}

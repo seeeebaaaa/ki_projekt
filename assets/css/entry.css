@@ -1,0 +1,76 @@
+/*\
+ * CSS for the entry content
+\*/
+
+.entry {
+    margin-top: -6em;
+    margin-bottom: 3em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    width: 100vw;
+}
+
+.entry > .title {
+    font-size: 3em;
+    font-weight: 600;
+    color: var(--c-text);
+    text-decoration: none;
+    text-align: center;
+    max-width: 66%;
+}
+
+.entry > .subtitle {
+    margin: 1em 0em;
+    font-size: 1.3em;
+    font-weight: 400;
+    color: var(--c-text);
+    text-decoration: none;
+    text-align: center;
+    max-width: 66%;
+}
+
+.entry > .input-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    gap: 0.5em;
+    cursor: text;
+}
+
+.entry > .input-container > .input {
+    background-color: var(--c-text);
+    border: 2px solid var(--c-text);
+    border-radius: var(--r-border);
+    padding: 0.75em 1em;
+    min-width: 20em;
+    color: var(--c-bg-main);
+}
+
+.entry > .input-container > .input > input {
+    width: 100%;
+}
+
+.entry > .input-container > button {
+    border: 2px solid var(--c-text);
+    border-radius: var(--r-border);
+    color: var(--c-text);
+    padding: 0.75em 1em;
+    font-weight: bolder;
+    background-color: var(--c-bg-dark);
+    transition: 100ms;
+}
+
+.entry > .input-container > button:hover:not(:disabled) {
+    background-color: var(--c-bg-light);
+}
+
+.entry > .input-container > button:disabled {
+    color: var(--c-text-scnd);
+    border-color: var(--c-text-scnd);
+    cursor: auto;
+}
