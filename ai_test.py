@@ -14,10 +14,10 @@ ast_code = python_parse_file(file_path)
 if __name__ == "__main__":
     load_dotenv()
     gemini = GoogleGenAI_API(GoogleGenAI_API.Models.GEMINI_2x0_FLASH)
-    ollama = Ollama_API(Ollama_API.Models.DEEPSSEKR1_70B)
+    ollama = Ollama_API(Ollama_API.Models.LLAMA3_70B)
     # print(ai_api.simple_prompt("what is the capital of denmark?"))
-    # docu_ollama = ollama.generate_docs(code)
+    docu = ollama.generate_docs(code)
 
-    docu_gemini = gemini.generate_docs(code)
+    # docu = gemini.generate_docs(code)
 
-    print(docu_gemini.comments[2].model_dump_json())
+    print(docu.model_dump_json())

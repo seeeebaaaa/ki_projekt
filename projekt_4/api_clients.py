@@ -36,7 +36,7 @@ class AI_API(ABC):
                                     <return_type>: <description of the return value>
 
                         """
-    
+
     class Models(str, Enum):
         pass
 
@@ -120,12 +120,14 @@ class Ollama_API(AI_API):
         NEMOTRON_LATEST = "nemotron:latest"
         NOMIC_EMBED_TEXT_LATEST = "nomic-embed-text:latest"
 
-    server_url = "https://im-kigs.oth-regensburg.de/openwebui/ollama/"
+    server_url = "https://im-kigs-openwebui.oth-regensburg.de/ollama/"
 
     def __init__(self, model: Models = Models.DEEPSSEKR1_70B):
         self.model = model
+        api_key = os.getenv("OPENWEBUI_API_KEY")
         self.client = ollama.Client(
             host=self.server_url,
+            headers={"Authorization": f"Bearer {api_key}"},
         )
 
     def simple_prompt(self, prompt: str) -> str:
@@ -134,15 +136,15 @@ class Ollama_API(AI_API):
         return response.message.content
 
     def generate_docs(self, input_code):
-        user_instruction = (
-            self.user_instruction + f"Here is a code snippet: {input_code}"
-        )
+        # self.user_instruction = "Follow common Python docstring conventions."
+        code_prompt = f"Here is a code snippet: {input_code}"
 
         response_format = CommentList.model_json_schema()
 
         messages = [
             {"role": "system", "content": self.system_instruction},
-            {"role": "user", "content": user_instruction},
+            {"role": "user", "content": self.user_instruction},
+            {"role": "user", "content": code_prompt},
         ]
         response = self.client.chat(
             model=self.model, messages=messages, format=response_format
