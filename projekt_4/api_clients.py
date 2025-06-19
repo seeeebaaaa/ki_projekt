@@ -21,21 +21,11 @@ class CommentList(BaseModel):
 
 # Base interface for AI API communication
 class AI_API(ABC):
-    system_instruction = """You are a code documentation engine. Users will provide you with code snippets and you will generate technical documentation describing what the code does.
-                            Please provide the documentation in the form of code comments that can be inserted into the code.
-                            If the snippet already has documentation, check if it correctly describes the code. If so, do NOT generate new documentation.
-                            Respond using JSON."""
-
-    user_instruction = f"""Please generate documentation following this schema where applicable:
-                                <desceription of what the code accomplishes>
-
-                                Args:
-                                    <arg_name> (type): <description of the argument>
-
-                                Returns:
-                                    <return_type>: <description of the return value>
-
-                        """
+    file_path = os.path.dirname(__file__)
+    with open(os.path.join(file_path, "prompt_system"), "r") as file:
+        system_instruction = file.read()
+    with open(os.path.join(file_path, "prompt_user"), "r") as file:
+        user_instruction = file.read()
 
     class Models(str, Enum):
         pass
@@ -50,7 +40,7 @@ class AI_API(ABC):
         pass
 
     @abstractmethod
-    def generate_docs(self, input_code):
+    def generate_docs(self, input_code) -> CommentList:
         """Generate documentation based on the given code."""
         pass
 

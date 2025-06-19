@@ -10,9 +10,6 @@ def python_parse_file(file_path):
     if not file.exists():
         raise FileNotFoundError(f"The file {file_path} does not exist.")
         # if not file_path.startswith(PROJECT_PATH):
-        raise ValueError(
-            f"The file {file_path} is not within the allowed path {PROJECT_PATH}."
-        )
     if not file.suffix == ".py":
         raise ValueError(f"The file {file_path} is not a Python (.py) file.")
 
@@ -21,36 +18,12 @@ def python_parse_file(file_path):
     with open(file_path) as file:
         code = file.read()
     file_tree = ast.parse(code)
-    # get list of functions
-    function_nodes = [
-        node for node in file_tree.body if isinstance(node, ast.FunctionDef)
-    ]
-    # get list of classes
-    class_nodes = [node for node in file_tree.body if isinstance(node, ast.ClassDef)]
+    return file_tree
 
+def extract_relevant_nodes(file_tree, code):
+    # get list of functions
     function_list = []
     class_list = []
-
-    # function_list = [
-    #     {
-    #         "name": node.name,
-    #         "docstring": ast.get_docstring(node),
-    #         "source": ast.get_source_segment(code, node),
-    #         "node": node,
-    #         "file": file_path,
-    #     }
-    #     for node in function_nodes
-    # ]
-    # class_list = [
-    #     {
-    #         "name": node.name,
-    #         "docstring": ast.get_docstring(node),
-    #         "source": ast.get_source_segment(code, node),
-    #         "node": node,
-    #         "file": file_path,
-    #     }
-    #     for node in class_nodes
-    # ]
 
     def parse_node(node, code):
         """Recursively parse a node to extract its structure."""
@@ -84,9 +57,13 @@ def python_parse_file(file_path):
             return new_node
         return None
 
-    nodes = [parse_node(node, code) for node in file_tree.body if isinstance(node, (ast.FunctionDef, ast.ClassDef))]
+    nodes = [
+        parse_node(node, code)
+        for node in ast.iter_child_nodes(file_tree)
+        if isinstance(node, (ast.FunctionDef, ast.ClassDef))
+    ]
 
-    return function_list, class_list
+    return nodes, function_list, class_list
 
 
 def python_parse_folder(folder_path, recursive=True):

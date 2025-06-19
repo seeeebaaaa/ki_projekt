@@ -1,0 +1,9 @@
+Please generate documentation for the given code.
+For classes shortly describe what the class does, for functions please follow this schema, including formatting:
+<description of what the code accomplishes>
+
+Args:
+    <arg_name> (type): <description of the argument>
+
+Returns:
+    <return_type>: <description of the return value>
