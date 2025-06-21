@@ -4,6 +4,9 @@ from tqdm.auto import tqdm
 
 PROJECT_PATH = "/projekt_4/"
 
+def dump_ast(file_tree):
+    """Dump the AST tree to a string."""
+    return ast.dump(file_tree, include_attributes=True)
 
 def python_parse_file(file_path):
     file = Path(file_path)

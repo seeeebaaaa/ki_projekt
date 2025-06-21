@@ -1,9 +1,6 @@
 # pull official base image
-FROM python:3.12.3 AS parser
+FROM python:3.12.3-slim AS prompter
 
-# set environment variables
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
 
 RUN mkdir -p /parser
 WORKDIR /parser
@@ -16,4 +13,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 # copy project
 COPY . /parser
 
-CMD ["fastapi","dev","--host=0.0.0.0","--port=5000", "app.py"]
+CMD ["fastapi","dev","--host=0.0.0.0","--port=6000", "app.py"]
