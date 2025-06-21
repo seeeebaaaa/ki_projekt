@@ -139,13 +139,8 @@ services:
       target: "prompter"
     tty: true
     entrypoint: []
-    # expose a port to the docker network (ports binds them to host)
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://0.0.0.0:6000/healthy"]
-      interval: "60s"
-      timeout: "3s"
-      start_period: "5s"
-      retries: 3
+    depends_on:
+      - redis
     profiles: ["prompter"]
 volumes:
   redis: {}

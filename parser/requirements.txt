@@ -1,2 +1,5 @@
-fastapi[standard]
 tqdm
+celery
+ollama
+google-genai
+pydantic

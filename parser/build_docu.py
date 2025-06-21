@@ -1,12 +1,20 @@
-import os
 import ast
 from dotenv import load_dotenv
+from celery import Celery
 
 from .api_clients import AI_API, GoogleGenAI_API, Ollama_API
+from .parse_file import python_parse_file
 
-def build_docu(json_ast: ast.AST):
+celery_buildDocu = Celery(
+    "build_docu",
+    broker="redis://redis:6379/0",
+    backend="redis://redis:6379/0",
+)
+
+@celery_buildDocu.task
+def build_docu(file_path: str):
     llm_api = Ollama_API(Ollama_API.Models.LLAMA3_70B)  
-    ast_tree = ast.literal_eval(json_ast)
+    ast_tree = python_parse_file(file_path)
     docu_tree = generate_docs_from_ast(ast_tree, llm_api)
 
     return ast.unparse(docu_tree)

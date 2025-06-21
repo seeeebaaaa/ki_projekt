@@ -1,3 +1,4 @@
 ollama
 google-genai
 pydantic
+celery

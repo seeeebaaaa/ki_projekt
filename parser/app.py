@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
-from parser import python_parse_file, python_parse_folder, dump_ast
+from parser import python_parse_file, python_parse_folder, dump_ast, build_docu
 
 app = FastAPI()
 class CodeRequest(BaseModel):
@@ -27,5 +27,13 @@ def py_file(request: FileRequest):
         # Serialize the AST tree to a string for JSON response
         ast_json = dump_ast(ast_tree)
         return {"ast": ast_json}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/docu")
+def docu(request: FileRequest):
+    try:    
+        result = build_docu(request.file_path)
+        return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

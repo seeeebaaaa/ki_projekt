@@ -9,8 +9,7 @@ from celery import shared_task, current_task, group, chord
 
 from projekt_4.config import create_app  # -Line 1
 from projekt_4.redis_helper import save_progress, get_progress
-from parser import python_parse_folder, python_parse_file
-from prompter import build_docu
+from parser import python_to_ast_json, python_parse_file, build_docu
 
 flask_app = create_app()  # -Line 2
 celery_app = flask_app.extensions["celery"]  # -Line 3
@@ -134,13 +133,10 @@ def ai_parse(args):
     """Parses the given file (path) and returns result"""
     uid = args["uid"]
     file = Path(args["file"])
-    parser_response = requests.post(
-        "http://parser:5000/parse/file", json={"file_path": str(file)}, timeout=120
-    )
-    ast_json = parser_response.json()["ast"]
+    ast_json = python_parse_file(file_path=str(file)) # maybe try again with ast2json package. ast.dump() is not working
     # update client progress
     save_progress(uid, {"state": "ai", "state_status": f"Parsed {file.name}"})
-    return {"uid": uid, "file": str(file), "ast": ast_json}
+    return {"uid": uid, "file": str(file)}
 
 
 @shared_task(ignore_result=False)
@@ -167,19 +163,24 @@ def ai_prompt(args):
     uid = args["uid"]
     file = Path(args["file"])
     args["prompted"] = True
-    ast_json = args["ast"]  # This should be the serialized AST from the parser
+    print ("Prompting file:" + str(file))
 
     try:
+        docstring_code = build_docu(file_path=str(file))
+        # print("module Docstring code:", docstring_code)
         # Call the prompter microservice
-        prompter_response = requests.post(
-            "http://prompter:6000/docu",
-            json={"ast": ast_json},  # Pass serialized AST
-            timeout=120,
-        )
-        prompter_response.raise_for_status()
-        docstring_code = prompter_response.json()[
-            "docstring_code"
-        ]  # Get generated code with docstrings
+
+        # Not working, failing to resole "parser"
+        # prompter_response = requests.post(
+        #     "http://parser:5000/docu",
+        #     json={"file_path": str(file)},  # Pass serialized AST
+        # )
+        # prompter_response.raise_for_status()
+        # api_docstring_code = prompter_response.json()[
+        #     "docstring_code"
+        # ]  # Get generated code with docstrings
+        # print("api Docstring code:", api_docstring_code)
+        
         args["prompt_result_file"] = docstring_code
     except Exception as e:
         args["prompt_result_file"] = f"Error: {str(e)}"
