@@ -154,18 +154,24 @@ export const submit_review_cb_end = (re,old_state) => {
     // hide loading screen
     $(".main>.content>.loading").hide()
     $(".main>.content>.bundle-download").removeClass("hidden")
-    $(".main>.content>.bundle-download>button.bundle-proceed").prop("disabled", true)
+    $(".main>.content>.bundle-download button.bundle-proceed").prop("disabled", true)
 
     $(".main>.content>.bundle-download").on("click", e => {
-         $(".main>.content>.bundle-download>button.bundle-proceed").prop("disabled", false)
+         $(".main>.content>.bundle-download button.bundle-proceed").prop("disabled", false)
     })
 
-    $(".main>.content>.bundle-download>button.bundle-proceed").on("click", el => {
+    $(".main>.content>.bundle-download button.bundle-proceed").on("click", el => {
         // go to next phase aka selecting next post
         stop_step("bundle")
         start_step("sphinx")
         $(".main>.content>.bundle-download").hide()
         $(".main>.content>.sphinx-settings").removeClass("hidden")
+
+        $(".main>.content>.sphinx-settings select#sphinx-theme").on("input", el => {
+            if ($(".main>.content>.sphinx-settings select.sphinx-theme").val() != "none")
+                $(".main>.content>.sphinx-settings button.sphinx-proceed").prop("disabled", false)
+        })
+
         // add next click to button
         $(".main>.content>.sphinx-settings button.sphinx-proceed").on("click", el => {
             // get selected theme
@@ -182,16 +188,16 @@ export const submit_review_cb_end = (re,old_state) => {
             .then(response => response.json())
             .then(data => {
                 if (data.error) {
-                    console.error('Review submission error:', data.error);
+                    console.error('Sphinx running error:', data.error);
                     return;
                 }
                 // then call poll_progress again
                 // close previous state
-                stop_step('review')
+                stop_step('bundle')
+                start_step("sphinx")
                 $(".main>.content>.loading").show()
-                $(".main>.content>.review").hide()
-                $(".main>.content>.editor").hide()
-                poll_progress(submit_review_cb_loop, submit_review_cb_end, 100);
+                $(".main>.content>.sphinx-settings").hide()
+                poll_progress(start_sphinx_cb_loop, start_sphinx_cb_end, 100);
             })
             .catch(err => {
                 console.error('Network error during review submission:', err);
@@ -200,4 +206,15 @@ export const submit_review_cb_end = (re,old_state) => {
         })
 
      })
+}
+
+export const start_sphinx_cb_loop = re => {
+    update_progress(re.state, re.state_text, re.state_status)
+}
+
+export const start_sphinx_cb_end = (re, old_state) => {
+    stop_step(old_state)
+    $(".main>.content>.loading").hide()
+    $(".main>.content>.sphinx-download").removeClass("hidden")
+
 }

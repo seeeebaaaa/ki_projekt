@@ -8,6 +8,8 @@ import validators
 from projekt_4.tasks import flask_app as app, start_clone_git, process_files, bundle_create_bundle, generate_docs
 from projekt_4.redis_helper import get_progress, init_progress, save_progress
 from pathlib import Path
+import shutil
+import tempfile
 
 # svg helper to render them inline
 # Assuming SVGs are in 'static/svg/'
@@ -155,3 +157,19 @@ def start_sphinx()->dict[str,object]:
     result = generate_docs.apply_async(args=[session.get("_id")])
     save_progress(uid, {"current_task_id": result.id})
     return jsonify({"success": "Task created"})
+
+
+@app.get("/download_sphinx")
+@ensure_session
+def download_sphinx():
+
+    uid = session.get("_id")
+    build_dir = Path(f"/data/docs/{uid}/build")
+    if not build_dir.exists() or not build_dir.is_dir():
+        return jsonify({"error": "Sphinx build directory not found"}), 404
+
+    with tempfile.NamedTemporaryFile(suffix=".zip", delete=False) as tmp_zip:
+        shutil.make_archive(tmp_zip.name[:-4], 'zip', root_dir=build_dir)
+        zip_path = tmp_zip.name[:-4] + ".zip"
+
+    return send_file(zip_path, as_attachment=True, download_name="sphinx_build.zip")

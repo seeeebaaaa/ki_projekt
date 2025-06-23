@@ -226,11 +226,23 @@
                         <option value="none" selected disabled>Select a theme</option>
                         <option value="standard">Standard Theme</option>
                     </select>
-                    <button class="sphinx-proceed">
+                    <button class="sphinx-proceed" disabled>
                         Proceed
                     </button>
-                        
-                 
+                </div>
+                <div class="filler"></div>
+            </div>
+            <!-- Page to download sphinx stuff -->
+            <div class="sphinx-download hidden">
+                <div class="symbol">{{ inline_svg('html5.svg') }}</div>
+                <div class="container">
+                    <div class="title">Configure Sphinx</div>
+                    <div class="text">
+                        Click the button below to download your final documentation!
+                    </div>
+                    <a href="/download_sphinx" class="sphinx-download-button" download>
+                        Download
+                    </a>
                 </div>
                 <div class="filler"></div>
             </div>
