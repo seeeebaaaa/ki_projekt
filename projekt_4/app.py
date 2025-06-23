@@ -1,11 +1,11 @@
-from flask import jsonify, request, render_template, session, redirect, url_for
+from flask import jsonify, request, render_template, session, redirect, url_for, send_file
 from markupsafe import Markup
 import os
 import uuid
 from functools import wraps
 from celery.result import AsyncResult
 import validators
-from projekt_4.tasks import flask_app as app, start_clone_git, process_files
+from projekt_4.tasks import flask_app as app, start_clone_git, process_files, bundle_create_bundle
 from projekt_4.redis_helper import get_progress, init_progress, save_progress
 from pathlib import Path
 
@@ -112,3 +112,23 @@ def changes()->dict[str,object]:
             "original": file_content
         })
     return jsonify({"error": "No changes available"})
+
+@app.post("/submit_review")
+@ensure_session
+def submit_review()->dict[str,object]:
+    uid = session.get("_id")
+    file_changes: dict[str,str] = request.json.get("file_changes")
+    save_progress(uid, {"file_changes":file_changes,"task_state":"pending"})
+    result = bundle_create_bundle.apply_async(args=[session.get("_id")])
+    save_progress(uid, {"current_task_id": result.id})
+    return jsonify({"success": "Task created"})
+
+
+@app.get("/download_bundle")
+@ensure_session
+def download_bundle():
+    uid = session.get("_id")
+    bundle_path = Path(f"/data/{uid}/changes.bundle")
+    if not bundle_path.exists():
+        return jsonify({"error": "Bundle file not found"}), 404
+    return send_file(str(bundle_path), as_attachment=True, download_name="changes.bundle")

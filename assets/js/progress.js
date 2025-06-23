@@ -1,5 +1,6 @@
 import $ from 'jquery'
 import { load_tree } from './tree'
+import { on_mark_done_click } from './review'
 
 // possible, stati: inactive, current, done
 const states = [
@@ -139,5 +140,21 @@ export const process_files_cb_end = (re,old_state) => {
     console.log("Done");
     // rebuild the tree to the given files
     let files = re.result.map((el, _) => el.file)
-    load_tree(files,true)
+    load_tree(files, true)
+    // attach function to mark as doen button
+    $(".main>.content>.editor>.top>.mark>button.mark-as-done").on("click",on_mark_done_click)
+}
+
+export const submit_review_cb_loop = re => {
+    update_progress(re.state, re.state_text, re.state_status)
+}
+
+export const submit_review_cb_end = (re,old_state) => {
+    stop_step(old_state)
+    // hide loading screen
+    $(".main>.content>.loading").hide()
+    $(".main>.content>.bundle-download").show().removeClass("hidden")
+    
+    console.log("Done");
+    
 }

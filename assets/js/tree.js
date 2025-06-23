@@ -3,10 +3,12 @@ import {
     poll_progress,
     process_files_cb_loop,
     process_files_cb_end,
+    submit_review_cb_loop,
+    submit_review_cb_end,
     stop_step
 } from './progress'
 
-import {on_file_click} from "./review"
+import {on_file_click, finished_file_contents} from "./review"
 
 async function buildTree (paths, review = false) {
     const root = {}
@@ -131,13 +133,13 @@ const buildHighlgiht = async _ => {
             $(`<div></div>`)
                 .addClass('check')
                 .html(await getSVG('check.svg'))
-                .on('simulate_click', check_item)
+                .on('simulate_click', check_item_highlight)
         )
         .append(
             $(`<div></div>`)
                 .addClass('attention')
                 .html(await getSVG('sparks-solid.svg'))
-                .on('simulate_click', check_item)
+                .on('simulate_click', check_item_highlight)
         )
     return $hightlight
 }
@@ -183,6 +185,16 @@ const check_item = e => {
         .trigger('prop_change_down')
         .trigger('prop_change_up')
     toggle_process_button()
+}
+
+const check_item_highlight = e => {
+    const item_checkbox = $(e.currentTarget).siblings()
+    item_checkbox
+        .prop('checked', (_, prop) => !prop)
+        .prop('indeterminate', false)
+        .trigger('prop_change_down')
+        .trigger('prop_change_up')
+    toggle_review_button()
 }
 
 const prop_change_up = e => {
@@ -323,6 +335,53 @@ const toggle_process_button = _ => {
         $list.html(content)
         $('.main>.content>.selection>.files-to-process *').show()
     } else $('.main>.content>.selection>.files-to-process *').hide()
+}
+
+// will finish the review once everything is done
+const toggle_review_button = _ => {
+    // send all files to server to be put into actual files and then bundled
+
+    // collect all selected files (for review, we want all checked files)
+
+    // prepare file_changes dict (could be just a list of paths, or you may want to send more info)
+
+    // send to /submit_review as file_changes dict
+    console.log("FFC:", finished_file_contents);
+    
+    // check if all files are accepted
+    const tree = $('.main>.content>.files>.tree')
+    for (const item of tree.find('.item')) {
+        if (!$(item).find('.checkbox>input').prop('checked'))
+            return
+    }
+    // now every file is checked aka marked as done
+    
+    fetch('/submit_review', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json'
+        },
+        body: JSON.stringify({"file_changes":finished_file_contents})
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            console.error('Review submission error:', data.error);
+            return;
+        }
+        // then call poll_progress again
+        // close previous state
+        stop_step('review')
+        $(".main>.content>.loading").show()
+        $(".main>.content>.review").hide()
+        $(".main>.content>.editor").hide()
+        poll_progress(submit_review_cb_loop, submit_review_cb_end, 100);
+    })
+    .catch(err => {
+        console.error('Network error during review submission:', err);
+        // Optionally show error to user
+    });
 }
 
 $(_ => {

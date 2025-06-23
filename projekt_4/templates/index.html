@@ -190,6 +190,22 @@
                 </div>
                 <div class="filler"></div>
             </div>
+            <!-- Page to allow download of bundle -->
+            <div class="bundle-download hidden">
+                <div class="symbol">{{ inline_svg('shopping-bag.svg') }}</div>
+                <div class="container">
+                    <div class="title">Download the bundle now</div>
+                    <div class="text">
+                        Click the button to download the bundle file, in order to incorporate the changes into your git repo.
+                    </div>
+                    <a class="bundle-download-button" href="/download_bundle" download>Download</a>
+                    <div class="text">
+                        To add this bundle to your repo cd into your local repo and call "git fetch ../path/to/branch.bundle branch-name:branch-name" to add the branch to your repo. Use "git checkout branch-name" to go there. Now you can create a PR or merge the changes into your repo.
+                    </div>
+                        
+                </div>
+                <div class="filler"></div>
+            </div>
             <!-- from https://www.html-code-generator.com/css/loading-animation?type=circle&page=1#modal -->
             <div class="loading">
                 <div class="loader-circle-11">

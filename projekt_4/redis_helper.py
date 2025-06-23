@@ -20,6 +20,7 @@ def init_progress(uid):
         "state_status": "",
         "task_state": "",
         "current_task_id": "",
+        "file_changes": {}
     }
     save_progress(uid, progress)
 

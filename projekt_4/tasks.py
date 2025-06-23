@@ -10,7 +10,7 @@ from celery import shared_task, current_task, group, chord
 from projekt_4.config import create_app  # -Line 1
 from projekt_4.redis_helper import save_progress, get_progress
 from parser import python_to_ast_json, python_parse_file, build_docu
-
+import subprocess
 flask_app = create_app()  # -Line 2
 celery_app = flask_app.extensions["celery"]  # -Line 3
 
@@ -223,4 +223,58 @@ def review_apply_changes(uid):
 @shared_task(ignore_result=False)
 def bundle_create_bundle(uid):
     """Create a git bundle, so the changed repository can be imported as a new branch."""
+    info = get_progress(uid)
+    file_changes:dict[str,str] = info["file_changes"]
+    save_progress(
+        uid,
+        {
+            "state": "bundle",
+            "state_text": "Applying Changes..",
+            "state_status": "",
+        }
+    )
+    base_path = Path("/data") / uid
+    for rel_path, content in file_changes.items():
+        file_path = base_path / rel_path
+        file_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(file_path, "w", encoding="utf-8") as f:
+            f.write(content)
+    # pause for progress update
+    repo = pygit2.Repository(str(base_path))
+    index = repo.index
+    index.add_all()
+    index.write()
+
+    tree = index.write_tree()
+    author = pygit2.Signature("Projekt 4", "changes@projekt_4.com")
+    committer = author
+
+    head_ref = repo.head.target
+    commit = repo.create_commit(
+        "refs/heads/changes",
+        author,
+        committer,
+        "apply changes",
+        tree,
+        [head_ref]
+    )
+
+    # Bundle the "changes" branch
+    bundle_path:Path = base_path / "changes.bundle"
+    subprocess.run(
+        ["git", "-C", str(base_path), "bundle", "create", str(bundle_path), "changes"],
+        check=True
+    )
+
+    sleep(1)
+    save_progress(
+        uid,
+        {
+            "state": "bundle",
+            "state_text": "Applied Changes",
+            "state_status": "",
+            "task_state": "done",
+            "link_to_bundle": str(bundle_path.absolute())
+        }
+    )
     return {}

@@ -31,7 +31,8 @@ export const create_editor_content = (originalContent, changedContent) => {
                 fullHeightEditor,
                 python(),
                 vsCodeDark,
-                unifiedMergeView({ original: originalContent })
+                unifiedMergeView({ original: originalContent }),
+                EditorView.lineWrapping
             ]
         });
     return ev
