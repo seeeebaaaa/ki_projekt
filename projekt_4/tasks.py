@@ -10,6 +10,7 @@ from celery import shared_task, current_task, group, chord
 from projekt_4.config import create_app  # -Line 1
 from projekt_4.redis_helper import save_progress, get_progress
 from parser import python_to_ast_json, python_parse_file, build_docu
+from sp_docs import sphinx_gen_docs  
 
 flask_app = create_app()  # -Line 2
 celery_app = flask_app.extensions["celery"]  # -Line 3
@@ -224,3 +225,21 @@ def review_apply_changes(uid):
 def bundle_create_bundle(uid):
     """Create a git bundle, so the changed repository can be imported as a new branch."""
     return {}
+
+@shared_task(ignore_result=False)
+def generate_docs(uid):
+    """Generate Sphinx documentation for the repository"""
+    base_path = Path(f"/data/{uid}/")
+    # Check if the base path exists
+    if not base_path.exists():
+        raise FileNotFoundError(f"Base path {base_path} does not exist.")
+    
+    # Generate documentation
+    try:
+        sphinx_gen_docs(base_path)
+        save_progress(uid, {"state": "docs", "state_text": "Documentation generated successfully."})
+    except Exception as e:
+        save_progress(uid, {"state": "docs", "state_text": f"Error generating documentation: {str(e)}"})
+        raise e
+    
+    current_task.update_state(state="SUCCESS")

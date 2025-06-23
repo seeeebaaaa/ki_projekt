@@ -142,6 +142,18 @@ services:
     depends_on:
       - redis
     profiles: ["prompter"]
+
+  sp_docs:
+    <<: *default-app
+    build:
+      context: "sp_docs/"
+      target: "sp_docs"
+    tty: true
+    entrypoint: []
+    depends_on:
+      - redis
+    profiles: ["sp_docs"]
+
 volumes:
   redis: {}
   data: {}

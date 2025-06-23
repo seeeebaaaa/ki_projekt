@@ -43,3 +43,16 @@ yarn remove jquery --modules-folder node_modules/ # = npm uninstall jquery
 
 Um die Logs (und eventuelle Probleme einzusehen, einfach `docker compose logs` nutzen, bzw. um die Logs von einem bestimmtem Container zu sehen den Namen (ast,web,js,css,...) anhängen. Z.B: `docker compose logs web`)
 Wenn Änderungen an `tasks.py`, oder Sachen die `task.py` u.ä. nutzt, gemacht wurden, dann muss es neu gebuilded/gestartet werden, da Celery sonst die Taskts nicht aktualisiert. (vmtl reichts den worker container neu zu starten/builden, aber idk)
+
+
+## Sphinx
+
+In /docs können testweise Docs mit Sphinx generiert werden. Dazu im Root des projekts diesen Befehl aufrufen und <ordner> mit dem entsprechenden ordner mit den source files ersetzen:
+```shell
+sphinx-apidoc -o docs <ordner>/
+```
+Danach 
+```shell
+./docs/make html
+```
+Damit wird die Website gebaut, die man dann browsen und klicken kann

@@ -13,7 +13,7 @@ celery_buildDocu = Celery(
 
 @celery_buildDocu.task
 def build_docu(file_path: str):
-    llm_api = Ollama_API(Ollama_API.Models.LLAMA3_70B)  
+    llm_api = Ollama_API(Ollama_API.Models.LLAMA31_70B)  
     ast_tree = python_parse_file(file_path)
     docu_tree = generate_docs_from_ast(ast_tree, llm_api)
 

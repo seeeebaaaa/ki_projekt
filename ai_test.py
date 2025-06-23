@@ -1,92 +1,54 @@
 import os
+import tempfile
+import shutil
 from dotenv import load_dotenv
-import ast
-from prompter import AI_API, GoogleGenAI_API, Ollama_API
-from parser import python_parse_file
+from parser import build_docu
+from sp_docs.gen_docu import sphinx_gen_docs
 
-def parse_code():
-    code = None
+def process_folder_and_generate_docs(input_folder, output_folder="docs"):
+    """
+    Process a folder of Python source files, add docstrings, save them in a temp folder,
+    and generate documentation using Sphinx.
 
-    file_path = os.path.join(os.path.dirname(__file__), "projekt_4", "api_clients.py")
-    with open (file_path, "r") as file:
-        code = file.read()
+    Args:
+        input_folder (str): Path to the folder containing Python source files.
+        output_folder (str): Path to the folder where documentation will be generated.
+    """
+    if not os.path.isdir(input_folder):
+        raise ValueError(f"The input folder '{input_folder}' does not exist or is not a directory.")
 
-    ast_code = python_parse_file(file_path)
-    return ast_code, code
+    # Create a temporary folder to store modified files
+    temp_folder = os.path.join(os.path.dirname(input_folder), "temp")
+    os.makedirs(temp_folder, exist_ok=True)
 
-def generate_docs_from_ast(ast_tree, llm_api: AI_API):
-    code = ast.unparse(ast_tree)
-    docstrings = llm_api.generate_docs(code)
-    # for node in ast.walk(ast_tree):
-    #     if isinstance(node, (ast.FunctionDef, ast.ClassDef)):
-    #         try:
-    #             # Insert the generated docstring into the AST node
-    #             docstring = "test"
-    #             if (ast.get_docstring(node)):
-    #                 node.body[0] = ast.Expr(value=ast.Constant(value=docstring))
-    #             else:
-    #                 node.body.insert(0, ast.Expr(value=ast.Constant(value=docstring)))
-    #         except StopIteration:
-    #             break
-    
-    class DocstringTransformer(ast.NodeTransformer):
-        def visit_FunctionDef(self, node):
-            self.generic_visit(node)  # Ensure we visit all children
-            docstring = self.find_docstring(node)
-            return self.insert_docstring(node, docstring=docstring)
+    try:
+        # Process each Python file in the input folder
+        for root, _, files in os.walk(input_folder):
+            for file in files:
+                if file.endswith(".py"):
+                    file_path = os.path.join(root, file)
+                    with open(file_path, "r") as f:
+                        original_code = f.read()
 
-        def visit_ClassDef(self, node):
-            self.generic_visit(node)  # Ensure we visit all children
-            docstring = self.find_docstring(node)
-            return self.insert_docstring(node, docstring=docstring)
-            
-        def find_docstring(self, node):
-            """
-            Finds the docstring for a given AST node.
-            """
-            if isinstance(node, ast.FunctionDef):
-                type = 'function'
-            else:
-                type = 'class'
+                    # Use build_docu to add docstrings
+                    modified_code = build_docu(file_path)
 
-            for comment in docstrings.comments:
-                if comment.type == type and comment.name == node.name:
-                    return comment.documentation
-            
-            return None
+                    # Save the modified code to the temp folder
+                    relative_path = os.path.relpath(file_path, input_folder)
+                    temp_file_path = os.path.join(temp_folder, relative_path)
+                    os.makedirs(os.path.dirname(temp_file_path), exist_ok=True)
+                    with open(temp_file_path, "w") as temp_file:
+                        temp_file.write(modified_code)
 
-        def insert_docstring(self, node, docstring):
-            """
-            Inserts a docstring into the given AST node.
-            """
-            if hasattr(node, 'body') and isinstance(node.body, list):
-                if node.body and isinstance(node.body[0], ast.Expr):
-                    # If there's already a docstring, replace it
-                    node.body[0] = ast.Expr(value=ast.Constant(value=docstring))
-                else:
-                    # Otherwise, insert a new docstring
-                    node.body.insert(0, ast.Expr(value=ast.Constant(value=docstring)))
+        # Generate documentation using sphinx_gen_docs
+        sphinx_gen_docs(temp_folder, output_folder)
 
-            return node
+    finally:
+        # Clean up the temporary folder
+        shutil.rmtree(temp_folder)
 
-    ast.fix_missing_locations(DocstringTransformer().visit(ast_tree))
-    return ast_tree
-
-# Example usage
 if __name__ == "__main__":
-    load_dotenv()
-    # gemini = GoogleGenAI_API(GoogleGenAI_API.Models.GEMINI_2x0_FLASH)
-    ollama = Ollama_API(Ollama_API.Models.LLAMA3_70B)
-    # print(ai_api.simple_prompt("what is the capital of denmark?"))
-
-    ast_tree, code = parse_code()
-
-    # docu = ollama.generate_docs(code)
-
-    ast_tree_with_docs = generate_docs_from_ast(ast_tree, ollama)
-
-    docu_code = ast.unparse(ast_tree_with_docs)
-
-    # docu = gemini.generate_docs(code)
-
-    print(docu_code)
+    load_dotenv()  # Load environment variables from .env file if needed
+    input_folder = "D:/OTH/6. Semester/KIP/ki_projekt/prompter"
+    output_folder = "D:/OTH/6. Semester/KIP/ki_projekt/docs"
+    process_folder_and_generate_docs(input_folder, output_folder)
