@@ -153,7 +153,7 @@ def download_bundle():
 def start_sphinx()->dict[str,object]:
     uid = session.get("_id")
     selected_theme: dict[str,str] = request.json.get("selected_theme")
-    save_progress(uid, {"selected_theme":selected_theme,"task_state":"pending"})
+    save_progress(uid, {"state":"sphinx","selected_theme":selected_theme,"task_state":"pending"})
     result = generate_docs.apply_async(args=[session.get("_id")])
     save_progress(uid, {"current_task_id": result.id})
     return jsonify({"success": "Task created"})

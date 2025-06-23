@@ -33,6 +33,10 @@
     font-weight: bolder;
 }
 
+.main > .content > .editor > .top > .mark > button:hover {
+   background-color: var(--c-text-scnd);
+}
+
 .main > .content > .editor > div {
     flex-grow: 1;
     overflow-x: scroll;

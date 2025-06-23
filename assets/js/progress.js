@@ -193,8 +193,6 @@ export const submit_review_cb_end = (re,old_state) => {
                 }
                 // then call poll_progress again
                 // close previous state
-                stop_step('bundle')
-                start_step("sphinx")
                 $(".main>.content>.loading").show()
                 $(".main>.content>.sphinx-settings").hide()
                 poll_progress(start_sphinx_cb_loop, start_sphinx_cb_end, 100);
@@ -214,6 +212,8 @@ export const start_sphinx_cb_loop = re => {
 
 export const start_sphinx_cb_end = (re, old_state) => {
     stop_step(old_state)
+    stop_step("sphinx")
+    start_step("download")
     $(".main>.content>.loading").hide()
     $(".main>.content>.sphinx-download").removeClass("hidden")
 

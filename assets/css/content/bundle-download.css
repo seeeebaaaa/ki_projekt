@@ -69,6 +69,11 @@
     background-color: var(--c-text);
     border-radius: var(--r-border);
 }
+
+.main > .content > .sphinx-settings > .container > button.bundle-proceed:hover {
+    background-color: var(--c-text-scnd);
+}
+
 .main > .content > .bundle-download > .container > button.bundle-proceed:disabled {
     background-color: var(--c-text-scnd);
     cursor: not-allowed;
