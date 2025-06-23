@@ -53,7 +53,7 @@ def generate_docs_from_ast(ast_tree, llm_api: AI_API):
             """
             Inserts a docstring into the given AST node.
             """
-            if hasattr(node, 'body') and isinstance(node.body, list):
+            if hasattr(node, 'body') and isinstance(node.body, list) and docstring:
                 if node.body and isinstance(node.body[0], ast.Expr):
                     # If there's already a docstring, replace it
                     node.body[0] = ast.Expr(value=ast.Constant(value=docstring))
