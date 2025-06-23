@@ -1,0 +1,58 @@
+.main > .content > .bundle-download {
+    flex-grow: 2;
+    background-color: var(--c-bg-down);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.main > .content > .bundle-download > div {
+    flex-grow: 2;
+    flex-basis: 0;
+}
+
+.main > .content > .bundle-download > .symbol {
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    align-items: center;
+}
+
+.main > .content > .bundle-download > .symbol > svg {
+    width: 7em;
+    height: 7em;
+}
+
+.main > .content > .bundle-download > .symbol > svg * {
+    stroke: var(--c-text);
+    stroke-width: var(--w-symbol);
+}
+
+.main > .content > .bundle-download > .container {
+    margin:auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1em;
+    max-width: 30em;
+}
+
+.main > .content > .bundle-download > .container > .title {
+    font-size: 1.5em;
+    font-weight: bolder;
+    text-align: center;
+}
+.main > .content > .bundle-download > .container > .text {
+    text-align: center;
+}
+.main > .content > .bundle-download > .container > .bundle-download-button {
+    margin: auto;
+    padding: 0.75em 1.5em;
+    color: var(--c-bg-down);
+    background-color: var(--c-text);
+    border-radius: var(--r-border);
+}
+
+
