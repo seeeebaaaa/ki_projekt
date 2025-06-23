@@ -154,7 +154,50 @@ export const submit_review_cb_end = (re,old_state) => {
     // hide loading screen
     $(".main>.content>.loading").hide()
     $(".main>.content>.bundle-download").removeClass("hidden")
-    
-    console.log("Done");
-    
+    $(".main>.content>.bundle-download>button.bundle-proceed").prop("disabled", true)
+
+    $(".main>.content>.bundle-download").on("click", e => {
+         $(".main>.content>.bundle-download>button.bundle-proceed").prop("disabled", false)
+    })
+
+    $(".main>.content>.bundle-download>button.bundle-proceed").on("click", el => {
+        // go to next phase aka selecting next post
+        stop_step("bundle")
+        start_step("sphinx")
+        $(".main>.content>.bundle-download").hide()
+        $(".main>.content>.sphinx-settings").removeClass("hidden")
+        // add next click to button
+        $(".main>.content>.sphinx-settings button.sphinx-proceed").on("click", el => {
+            // get selected theme
+            const selectedTheme = $(".main>.content>.sphinx-settings select.sphinx-theme").val()
+            // send update and then continue progress polling
+            fetch('/start_sphinx', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json'
+                },
+                body: JSON.stringify({"selected_theme":selectedTheme})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    console.error('Review submission error:', data.error);
+                    return;
+                }
+                // then call poll_progress again
+                // close previous state
+                stop_step('review')
+                $(".main>.content>.loading").show()
+                $(".main>.content>.review").hide()
+                $(".main>.content>.editor").hide()
+                poll_progress(submit_review_cb_loop, submit_review_cb_end, 100);
+            })
+            .catch(err => {
+                console.error('Network error during review submission:', err);
+                // Optionally show error to user
+            });
+        })
+
+     })
 }

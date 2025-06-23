@@ -144,3 +144,14 @@ def download_bundle():
     if not bundle_path.exists():
         return jsonify({"error": "Bundle file not found"}), 404
     return send_file(str(bundle_path), as_attachment=True, download_name="changes.bundle")
+
+
+@app.post("/start_sphinx")
+@ensure_session
+def start_sphinx()->dict[str,object]:
+    uid = session.get("_id")
+    selected_theme: dict[str,str] = request.json.get("selected_theme")
+    save_progress(uid, {"selected_theme":selected_theme,"task_state":"pending"})
+    result = generate_docs.apply_async(args=[session.get("_id")])
+    save_progress(uid, {"current_task_id": result.id})
+    return jsonify({"success": "Task created"})

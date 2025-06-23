@@ -200,9 +200,37 @@
                     </div>
                     <a class="bundle-download-button" href="/download_bundle" download>Download</a>
                     <div class="text">
-                        To add this bundle to your repo cd into your local repo and call "git fetch ../path/to/changes.bundle changes:changes" to add the branch to your repo. Use "git checkout changes" to go there. Now you can create a PR or merge the changes into your repo.
+                        To add this bundle to your repo cd into your local repo and call <span>git fetch ../path/to/changes.bundle changes:changes</span> to add the branch to your repo. 
+                        <br>
+                        Use <span>git checkout changes</span> to go there. Now you can create a PR or merge the changes into your repo.
+                        <br>
+                        Click the button below to proceed afterwards.
                     </div>
+                    <button class="bundle-proceed">
+                        Proceed
+                    </button>
                         
+                 
+                </div>
+                <div class="filler"></div>
+            </div>
+            <!-- Page to specify sphinx stuff -->
+            <div class="sphinx-settings hidden">
+                <div class="symbol">{{ inline_svg('html5.svg') }}</div>
+                <div class="container">
+                    <div class="title">Configure Sphinx</div>
+                    <div class="text">
+                        Select a theme and settings for sphinx to build the documentation.
+                    </div>
+                    <select name="sphinx-theme" id="sphinx-theme">
+                        <option value="none" selected disabled>Select a theme</option>
+                        <option value="standard">Standard Theme</option>
+                    </select>
+                    <button class="sphinx-proceed">
+                        Proceed
+                    </button>
+                        
+                 
                 </div>
                 <div class="filler"></div>
             </div>

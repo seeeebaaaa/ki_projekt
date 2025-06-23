@@ -3,7 +3,7 @@ import sys
 from sphinx.application import Sphinx
 
 
-def sphinx_gen_docs(repo_path, output_path="docs"):
+def sphinx_gen_docs(repo_path, output_path):
     """
     Generate documentation using Sphinx from docstrings in the given code repository.
 

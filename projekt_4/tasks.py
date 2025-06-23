@@ -284,16 +284,18 @@ def bundle_create_bundle(uid):
 def generate_docs(uid):
     """Generate Sphinx documentation for the repository"""
     base_path = Path(f"/data/{uid}/")
+    output_path = Path("/data") / "docs"/ uid
     # Check if the base path exists
     if not base_path.exists():
         raise FileNotFoundError(f"Base path {base_path} does not exist.")
     
     # Generate documentation
     try:
-        sphinx_gen_docs(base_path)
-        save_progress(uid, {"state": "docs", "state_text": "Documentation generated successfully."})
+        sphinx_gen_docs(base_path,output_path)
+        save_progress(uid, {"state": "docs", "state_text": "Documentation generated successfully.", "task_state": "done"})
     except Exception as e:
-        save_progress(uid, {"state": "docs", "state_text": f"Error generating documentation: {str(e)}"})
+        save_progress(uid, {"state": "docs", "state_text": f"Error generating documentation: {str(e)}", "task_state": "done"})
         raise e
     
     current_task.update_state(state="SUCCESS")
+    return {}

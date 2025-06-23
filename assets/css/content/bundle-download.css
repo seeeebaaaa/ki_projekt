@@ -47,6 +47,13 @@
 .main > .content > .bundle-download > .container > .text {
     text-align: center;
 }
+
+.main > .content > .bundle-download > .container > .text span {
+    background-color: var(--c-bg-dark);
+    color: var(--c-text-scnd);
+    font-family: monospace;
+}
+
 .main > .content > .bundle-download > .container > .bundle-download-button {
     margin: auto;
     padding: 0.75em 1.5em;
@@ -55,4 +62,14 @@
     border-radius: var(--r-border);
 }
 
+.main > .content > .bundle-download > .container > button.bundle-proceed {
+    margin: auto;
+    padding: 0.75em 1.5em;
+    color: var(--c-bg-down);
+    background-color: var(--c-text);
+    border-radius: var(--r-border);
+}
+.main > .content > .bundle-download > .container > button.bundle-proceed:disabled {
+    background-color: var(--c-text-scnd);
+}
 
