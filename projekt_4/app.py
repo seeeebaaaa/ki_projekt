@@ -5,7 +5,7 @@ import uuid
 from functools import wraps
 from celery.result import AsyncResult
 import validators
-from projekt_4.tasks import flask_app as app, start_clone_git, process_files, bundle_create_bundle
+from projekt_4.tasks import flask_app as app, start_clone_git, process_files, bundle_create_bundle, generate_docs
 from projekt_4.redis_helper import get_progress, init_progress, save_progress
 from pathlib import Path
 
@@ -81,6 +81,18 @@ def process():
     result = process_files.apply_async(args=[session.get("_id")])
     save_progress(uid, {"current_task_id": result.id})
     return jsonify({"success": "Task created"})
+
+@app.get("/docs")
+@ensure_session
+def docs():
+    """Generate the documentation for the repo, using the updated docstrings"""
+    uid = session.get("_id")
+    progress = get_progress(uid)
+    if progress.get("state") != "review":
+        return jsonify({"error": f"Not correct processing order ({progress.get('state')})"})
+    
+    result = generate_docs.apply_async(args=[session.get("_id")])
+    save_progress(uid, {"current_task_id": result.id})
 
 
 # route to check if a task is done

@@ -1,6 +1,4 @@
-import os
 import ast
-from dotenv import load_dotenv
 
 from .api_clients import AI_API, GoogleGenAI_API, Ollama_API
 

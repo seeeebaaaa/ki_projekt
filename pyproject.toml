@@ -21,4 +21,5 @@ dependencies = [
   "ollama>=0.4.7",
   "google-genai>=1.10.0",
   "pydantic>=2.11.2",
+  "sphinx>=8.2.3",
 ]

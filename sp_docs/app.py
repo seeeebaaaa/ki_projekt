@@ -1,22 +1,22 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
-from .build_docu import build_docu
+from gen_docu import sphinx_gen_docs
 
 app = FastAPI()
 
-class ASTRequest(BaseModel):
-    ast: str
+class FileRequest(BaseModel):
+    path: str
 
 @app.get("/healthy")
 def healthy():
     """Route that provides an endpoint for the Docker health check."""
     return "yay"
 
-@app.post("/docu")
-def docu(request: ASTRequest):
+@app.post("/docs")
+def docu(request: FileRequest):
     try:    
-        result = build_docu(request.ast)
+        result = sphinx_gen_docs(request.path)
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
