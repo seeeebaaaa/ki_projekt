@@ -7,7 +7,30 @@
 }
 
 .main > .content > .editor > .top {
-    max-height: 5em;
+    min-height: 4em;
+    max-height: 4em;
+    background-color: var(--c-bg-down);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    color: var(--c-text);
+}
+
+.main > .content > .editor > .top > .file-name {
+    padding-left: 1em;
+}
+
+.main > .content > .editor > .top > .mark {
+    margin-left: auto;
+    padding-right: 1em;
+}
+
+.main > .content > .editor > .top > .mark > button {
+    background-color: var(--c-text);
+    color: var(--c-bg-down);
+    padding: 0.5em;
+    border-radius: var(--r-border);
+    font-weight: bolder;
 }
 
 .main > .content > .editor > div {

@@ -159,7 +159,14 @@
             </div>
             <!-- container for the CodeMirror editor -->
             <div class="editor hidden">
-                <div class="top"></div>
+                <div class="top">
+                    <div class="file-name">Example.py</div>
+                    <div class="mark">
+                        <button class="mark-as-done">
+                            <div>Mark as Done</div>
+                        </button>
+                    </div>
+                </div>
                 <div class="container"></div>
             </div>
             <!-- dialog box to e.g. select which branch etc -->
@@ -203,7 +210,7 @@
         </div>
         <div class="input-container">
             <div class="input">
-                <input type="text" name="entry_input" id="entry_input" placeholder="Enter URL to a git repo" value="https://github.com/seeeebaaaa/polycoid.gi"/>
+                <input type="text" name="entry_input" id="entry_input" placeholder="Enter URL to a git repo" value=""/>
             </div>
             <button type="button" disabled>Start</button>
         </div>

@@ -52,6 +52,12 @@ export const on_file_click = async el => {
     const $container = $parent.find(">.container")
     $container.empty()
     $container.append(ev.dom)
+    // replace filename in tab
+    const $tab = $(".main>.content>.editor>.top>.file-name")
+    console.log($tab);
+    console.log(path.split("/").at(-1));
+ 
+    $tab.text = path.split("/").at(-1)
     // see if review panel is still visible
     const $reviewPanel = $('.main > .content > .review')
     if ($reviewPanel.is(':visible'))
@@ -59,4 +65,5 @@ export const on_file_click = async el => {
     // see if editor still hidden
     if ($parent.is(':hidden'))
         $parent.removeClass("hidden")
+
 }
