@@ -1,9 +1,14 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
+from parser import python_parse_file, python_parse_folder, dump_ast, build_docu
+
 app = FastAPI()
 class CodeRequest(BaseModel):
     code: str
+
+class FileRequest(BaseModel):
+    file_path: str
 
 @app.post("/toLower")
 def to_lower(request: CodeRequest):
@@ -16,5 +21,19 @@ def healthy():
     return "yay"
 
 @app.post("/py/file")
-def py_file():
-    return "nothing"
+def py_file(request: FileRequest):
+    try:
+        ast_tree = python_parse_file(request.file_path)
+        # Serialize the AST tree to a string for JSON response
+        ast_json = dump_ast(ast_tree)
+        return {"ast": ast_json}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/docu")
+def docu(request: FileRequest):
+    try:    
+        result = build_docu(request.file_path)
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

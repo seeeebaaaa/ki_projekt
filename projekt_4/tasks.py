@@ -1,12 +1,15 @@
 # from projekt_4.app import celery_app
-from projekt_4.config import create_app  # -Line 1
-from celery import shared_task, current_task, group, chord
-from time import sleep
 import pygit2
-from pathlib import Path
 import shutil
-from projekt_4.redis_helper import save_progress, get_progress
+import requests
+from time import sleep
 from random import random
+from pathlib import Path
+from celery import shared_task, current_task, group, chord
+
+from projekt_4.config import create_app  # -Line 1
+from projekt_4.redis_helper import save_progress, get_progress
+from parser import python_to_ast_json, python_parse_file, build_docu
 
 flask_app = create_app()  # -Line 2
 celery_app = flask_app.extensions["celery"]  # -Line 3
@@ -31,12 +34,22 @@ class GitProgressCallback(pygit2.RemoteCallbacks):
         self.uid = uid
 
     def transfer_progress(self, stats):
-        save_progress(self.uid,{"state_status":f'{stats.indexed_objects}/{stats.total_objects}'})
+        save_progress(
+            self.uid, {"state_status": f"{stats.indexed_objects}/{stats.total_objects}"}
+        )
+
 
 @shared_task(ignore_result=False)
 def start_clone_git(session_id):
     """Clone the given git into the data volume under the uid and provide file structure"""
-    save_progress(session_id,{"task_state":"started","state_text":"Accessing Repo..","state_status":"0/???"})# git link
+    save_progress(
+        session_id,
+        {
+            "task_state": "started",
+            "state_text": "Accessing Repo..",
+            "state_status": "0/???",
+        },
+    )  # git link
     git_link = get_progress(session_id)["git_link"]
     # user path
     user_path: Path = Path("/data") / session_id
@@ -46,17 +59,34 @@ def start_clone_git(session_id):
     # make sure the path exits
     user_path.mkdir(exist_ok=True)
     # clone the repo (callback updates progress)
-    repo = pygit2.clone_repository(url=git_link, path=user_path,callbacks=GitProgressCallback(session_id))
+    repo = pygit2.clone_repository(
+        url=git_link, path=user_path, callbacks=GitProgressCallback(session_id)
+    )
     remote_branches = [
         b.lstrip("origin/") for b in repo.branches.remote
     ]  # remove origin prefix for visibility
     # get files for frontend
-    files = [str(p)[len("/data/"+session_id+"/"):] for p in user_path.glob("**/**")]
-    files.remove("") # remove base path
+    files = [
+        str(p)[len("/data/" + session_id + "/") :] for p in user_path.glob("**/**")
+    ]
+    files.remove("")  # remove base path
     # Remove every path that is /.git/*
-    files = [f for f in files if not f.startswith(".git/") and "/.git/" not in f and f!=".git"]
+    files = [
+        f
+        for f in files
+        if not f.startswith(".git/") and "/.git/" not in f and f != ".git"
+    ]
     print(files)
-    save_progress(session_id,{"data":{"branches":remote_branches,"files":files},"state":"select","state_text":"","state_status":"","task_state":"done"})
+    save_progress(
+        session_id,
+        {
+            "data": {"branches": remote_branches, "files": files},
+            "state": "select",
+            "state_text": "",
+            "state_status": "",
+            "task_state": "done",
+        },
+    )
     current_task.update_state(state="SUCCESS")
 
 
@@ -66,57 +96,98 @@ def select_switch_branch(session_id, branch_name):
     return {}
 
 
-
 @shared_task(ignore_result=False)
 def process_files(uid):
     """Acts as the starting point for parse&prompting tasks. Will filter out relevant paths and start everything"""
     info = get_progress(uid)
     files = info["files_to_process"]
-    
+
     # this checks, if the files are where they are supposed to be, so the user cant get access to files via ../../ etc
     base_path = Path("/data") / uid
-    files = [str(base_path)+f for f in files]
-    valid_files = [Path(f) for f in files if base_path in Path(f).resolve().parents and Path(f).exists()]
-    print("Valid paths:",valid_files)
-    print("All files:",files)
+    files = [str(base_path) + f for f in files]
+    valid_files = [
+        Path(f)
+        for f in files
+        if base_path in Path(f).resolve().parents and Path(f).exists()
+    ]
+    print("Valid paths:", valid_files)
+    print("All files:", files)
     if not valid_files:
         raise ValueError("No valid files to process.")
     # update state progress to match everything
-    save_progress(uid,{"state":"ai","state_text":f"Parsing files.. ({len(valid_files)})","state_status":""})
+    save_progress(
+        uid,
+        {
+            "state": "ai",
+            "state_text": f"Parsing files.. ({len(valid_files)})",
+            "state_status": "",
+        },
+    )
     # Collects all paths and starts parsing group
     task_list = [ai_parse.s({"uid": uid, "file": str(file)}) for file in valid_files]
     return chord(task_list)(ai_prompt_group.s())
+
 
 @shared_task(ignore_result=False)
 def ai_parse(args):
     """Parses the given file (path) and returns result"""
     uid = args["uid"]
     file = Path(args["file"])
-    sleep(random()*3)
+    ast_json = python_parse_file(file_path=str(file)) # maybe try again with ast2json package. ast.dump() is not working
     # update client progress
-    save_progress(uid,{"state":"ai","state_status":f"Parsed {file.name}"})
+    save_progress(uid, {"state": "ai", "state_status": f"Parsed {file.name}"})
     return {"uid": uid, "file": str(file)}
+
 
 @shared_task(ignore_result=False)
 def ai_prompt_group(parsed_results):
     """Collects all parsing results and starts prompting group"""
     uid = parsed_results[0]["uid"]
     # update client progress
-    save_progress(uid,{"state":"ai","state_text":f"Prompting files.. ({len(parsed_results)})","state_status":""})
+    save_progress(
+        uid,
+        {
+            "state": "ai",
+            "state_text": f"Prompting files.. ({len(parsed_results)})",
+            "state_status": "",
+        },
+    )
     # kick of celery tasks
     task_list = [ai_prompt.s(result) for result in parsed_results]
     return chord(task_list)(collect_all_prompted.s())
+
 
 @shared_task(ignore_result=False)
 def ai_prompt(args):
     """Prompt AI for changes etc for one instance (this task is created for each change)"""
     uid = args["uid"]
     file = Path(args["file"])
-    sleep(random()*3)
     args["prompted"] = True
-    args["prompt_result_file"] = "blab\nlabl\nabla" # the file contents after prompt, without direct file change, but still full file content
-    save_progress(uid,{"state":"ai","state_status":f"Prompted {file.name}"})
+    print ("Prompting file:" + str(file))
+
+    try:
+        docstring_code = build_docu(file_path=str(file))
+        # print("module Docstring code:", docstring_code)
+        # Call the prompter microservice
+
+        # Not working, failing to resole "parser"
+        # prompter_response = requests.post(
+        #     "http://parser:5000/docu",
+        #     json={"file_path": str(file)},  # Pass serialized AST
+        # )
+        # prompter_response.raise_for_status()
+        # api_docstring_code = prompter_response.json()[
+        #     "docstring_code"
+        # ]  # Get generated code with docstrings
+        # print("api Docstring code:", api_docstring_code)
+        
+        args["prompt_result_file"] = docstring_code
+    except Exception as e:
+        args["prompt_result_file"] = f"Error: {str(e)}"
+
+    save_progress(uid, {"state": "ai", "state_status": f"Prompted {file.name}"})
     return args
+
 
 @shared_task(ignore_result=False)
 def collect_all_prompted(prompt_results):
@@ -127,12 +198,20 @@ def collect_all_prompted(prompt_results):
     base_path = f"/data/{uid}/"
     for result in prompt_results:
         if result["file"].startswith(base_path):
-            result["file"] = result["file"][len(base_path):]
+            result["file"] = result["file"][len(base_path) :]
 
-    save_progress(uid,{"result":prompt_results,"state":"review","state_text":"","state_status":"","task_state":"done"})
+    save_progress(
+        uid,
+        {
+            "result": prompt_results,
+            "state": "review",
+            "state_text": "",
+            "state_status": "",
+            "task_state": "done",
+        },
+    )
     current_task.update_state(state="SUCCESS")
     return prompt_results
-
 
 
 @shared_task(ignore_result=False)

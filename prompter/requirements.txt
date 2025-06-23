@@ -1,5 +1,4 @@
-tqdm
-celery
 ollama
 google-genai
 pydantic
+celery

@@ -132,6 +132,16 @@ services:
       retries: 3
     profiles: ["parser"]
 
+  prompter:
+    <<: *default-app
+    build:
+      context: "prompter/"
+      target: "prompter"
+    tty: true
+    entrypoint: []
+    depends_on:
+      - redis
+    profiles: ["prompter"]
 volumes:
   redis: {}
   data: {}
