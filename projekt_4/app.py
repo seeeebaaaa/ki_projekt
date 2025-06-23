@@ -100,6 +100,7 @@ def changes()->dict[str,object]:
     uid = session.get("_id")
     path:str = request.json.get("path")
     data = get_progress(uid)
+    print(uid, path, data)
     if "result" in data:
         if not any(item.get("file") == path for item in data["result"]):
             return jsonify({"error": "No file with the specified path found"})
